@@ -1,0 +1,82 @@
+    //Isso é uma textura(basicamente um sprite)
+    public Texture ArenaTexture;
+    public Texture yourPokemom;
+    public Texture EnemyPokemom;
+    //Area de desenho de texturas
+    public SpriteBatch batch;
+    //stage
+    public Stage stage;
+    //Camera
+    public PerspectiveCamera Camera;
+    public int x = 0;
+
+    //viewport
+    private FitViewport viewport;
+
+    //Create event happens when the class is created
+    @Override
+    public void create(){
+        batch = new SpriteBatch();
+        stage = new Stage();
+        //Load UI
+
+
+        //Load Pokemom textures
+        yourPokemom = new Texture("pokemons/Back/Charizard.png");
+        EnemyPokemom = new Texture("pokemons/Front/Venussaur.png");
+
+
+        //Load another sprites
+        ArenaTexture = new Texture("Ui/battle.png");
+
+        //set viewport and camera
+        Camera = new PerspectiveCamera(70,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),Camera);
+
+    }
+
+    @Override
+    public void render(){
+        input();
+        logic();
+        draw();
+    }
+
+    //where we will read players commands
+    public void input(){
+
+    }
+
+    public void logic(){
+
+    }
+
+    public void draw(){
+        //draw everything inside the screen
+        ScreenUtils.clear(Color.BLACK);
+        Camera.update();
+        //start draw zone
+        batch.begin();
+            float worldWidth = Camera.viewportWidth;
+            float worldHeiht = Camera.viewportHeight;
+            batch.draw(ArenaTexture,0,0,worldWidth,worldHeiht);
+            batch.draw(yourPokemom,25,-12,200,200);
+            batch.draw(EnemyPokemom,380,165,200,200);
+
+
+
+        //end draw zone
+        batch.end();
+    }
+    @Override
+    public void dispose(){
+        ArenaTexture.dispose();
+        yourPokemom.dispose();
+        EnemyPokemom.dispose();
+        batch.dispose();
+    }
+
+    @Override
+    public void resize(int width, int height){
+        viewport.update(width, height, true); // true centers the camera
+    }
