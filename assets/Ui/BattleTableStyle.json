@@ -1,0 +1,7 @@
+{
+  "com.badlogic.gdx.scenes.scene2d.ui.": {
+    "default": {
+      "up": "Battle/Core"
+    }
+  }
+}
