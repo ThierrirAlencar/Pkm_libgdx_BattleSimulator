@@ -32,10 +32,9 @@ public class CombateScene extends ApplicationAdapter {
     //Create event happens when the class is created
     @Override
     public void create(){
-
         //initialize camera and viewport
         Camera = new PerspectiveCamera(70, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        Camera.position.set(0, 0, 10f); // Set the camera position
+        Camera.position.set(0, 0, 0); // Set the camera position
         Camera.lookAt(0, 0, 0); // Look at the origin
         Camera.near = 1f; // Set the near clipping plane
         Camera.far = 100f; // Set the far clipping plane
@@ -58,7 +57,6 @@ public class CombateScene extends ApplicationAdapter {
         mainTable.setFillParent(true);
         //Add table inside the scene
         stage.addActor(mainTable);
-
 
         BackgroundTexture = new Texture("Ui/battle.png");
 
@@ -100,7 +98,6 @@ public class CombateScene extends ApplicationAdapter {
         stage.dispose();
         BackgroundTexture.dispose();
         spriteBatch.dispose();
-
     }
 
     @Override
