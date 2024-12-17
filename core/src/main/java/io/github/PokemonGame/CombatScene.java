@@ -1,34 +1,31 @@
 package io.github.PokemonGame;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import org.w3c.dom.Text;
+import io.github.PokemonGame.Classes.Pokemon;
 
 import java.util.Random;
 
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.math.MathUtils.random;
 
-public class Game extends ApplicationAdapter {
+public class CombatScene extends ApplicationAdapter {
     //Isso é uma textura(basicamente um sprite)
     public Texture ArenaTexture;
-    public Texture yourPokemom;
-    public Texture EnemyPokemom;
+    //Load Pokemom textures
+    public Texture BackVenussaur = new Texture("pokemons/Back/3.png");
+    public Texture FrontSquirtle = new Texture("pokemons/Front/7.png");
     //Area de desenho de texturas
     public SpriteBatch batch;
     //stage
@@ -42,11 +39,8 @@ public class Game extends ApplicationAdapter {
     private Table table = new Table();
     private Table SecondOptionsTable = new Table();
     private Boolean showSecondTable = false;
-    //pkm states Later throw this into a specific class
-    public float OpositLife = 80;
-    public float PersonalLife = 100;
-    public int currentPokemon = 3;
-    public int currentEnemyPkm = 6;
+    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur);
+    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",FrontSquirtle);
     public Skin textSkin = new Skin(Gdx.files.internal("Ui/ui_skin.json"));
     public BitmapFont font = textSkin.getFont("font");
 
@@ -54,12 +48,8 @@ public class Game extends ApplicationAdapter {
     @Override
     public void create(){
         batch = new SpriteBatch();
-        //Load UI
 
 
-        //Load Pokemom textures
-        yourPokemom = new Texture("pokemons/Back/"+currentPokemon+".png");
-        EnemyPokemom = new Texture("pokemons/Front/"+currentEnemyPkm+".png");
         //Load progress bar
         ShapeRenderer bar = new ShapeRenderer();
 
@@ -133,15 +123,20 @@ public class Game extends ApplicationAdapter {
         draw();
     }
     public void turnTrue(){
-        this.OpositLife-=10;
+        this.currentEnemyPkm.Damage(10);
     }
     public void SwitchPokemon(){
-        switch (this.currentPokemon){
-            case 3:this.currentPokemon = 6; break;
-            case 6:this.currentPokemon = 3; break;
+
+        Texture BackVenussaur = new Texture("pokemons/Back/3.png");
+        Texture BackCharizard = new Texture("pokemons/Back/6.png");
+        switch (this.currentPokemon.getcIndex()){
+            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur);Gdx.app.log("Turning","Venussaur"); break;
+            case 3:currentPokemon = new Pokemon(6,150,"Charizard",BackCharizard);Gdx.app.log("Turning","Charizard");  break;
         }
-        yourPokemom.dispose();
-        yourPokemom = new Texture("pokemons/Back/"+currentPokemon+".png");
+
+        Texture cls = currentPokemon.getTexture();
+        cls.dispose();
+        currentPokemon.setTexture(new Texture("pokemons/Back/"+currentPokemon.getcIndex()+".png"));
     }
     //where we will read players commands
     public void input(){
@@ -151,18 +146,18 @@ public class Game extends ApplicationAdapter {
         SwitchPokemon();
     }
     public void EnemyPokemonIsDead(){
-        Random random = new Random();
-        currentEnemyPkm = random.nextInt(12) + 1;
-        EnemyPokemom.dispose();
-        EnemyPokemom = new Texture("pokemons/Front/"+currentEnemyPkm+".png");
+        Gdx.app.log("Enemy Pokemon is dead (Switching to a new enemy","Enemy Pokemon is dead (Switching to a new enemy");
+        Random random = new Random();//Use it to create a random pokemon later
+        currentEnemyPkm = new Pokemon(9,150,"Blastoise",new Texture("pokemons/Front/9.png"));
+        currentEnemyPkm.getTexture().dispose();
+        currentEnemyPkm.setTexture(new Texture("pokemons/Front/"+currentEnemyPkm.getcIndex()+".png"));
     }
     public void logic(){
-        if(PersonalLife<=0){
+        if(currentPokemon.getLife()<=0){
             YourPokemonIsDead();
         }
-        if(OpositLife<=0){
+        if(currentEnemyPkm.getLife()<=0){
             EnemyPokemonIsDead();
-            OpositLife = 100;
         }
     }
 
@@ -170,8 +165,8 @@ public class Game extends ApplicationAdapter {
         //é meio auto explicativo (desenha a barra de vida dos dois pokemons)
         // Essas variaveis definem o tamanho da barra de vida que é proporcional a vida
         // width = currentHealth / totalHealth * totalBarWidth;
-        float width = (PersonalLife / 100f )*300f;
-        float OpositWidth = (OpositLife / 100f * 300f);
+        float width = (currentPokemon.getLife() / 100f )*300f;
+        float OpositWidth = (currentEnemyPkm.getLife() / 100f * 300f);
         float experience = 20;
         // Desenha a barra de vida preenchida (em verde)
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -193,7 +188,6 @@ public class Game extends ApplicationAdapter {
 
     public void draw(){
 
-
         // Clear the screen
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -203,12 +197,12 @@ public class Game extends ApplicationAdapter {
         //start draw zone
         batch.begin();
         batch.draw(ArenaTexture, 0, 0, Camera.viewportWidth, Camera.viewportHeight);
-        batch.draw(yourPokemom,100,0,300,300);
-        batch.draw(EnemyPokemom,600,300,300,300);
+        batch.draw(currentPokemon.getTexture(),100,0,300,300);
+        batch.draw(currentEnemyPkm.getTexture(),600,300,300,300);
         //Nome do pokemon
         font.setColor(Color.BLACK);
-        font.draw(batch,"Venussaur",720,280,1.2f,10,false);
-        font.draw(batch,"Charizard",50, 750,1.2f,10,false);
+        font.draw(batch,currentPokemon.getName(),720,280,1.2f,10,false);
+        font.draw(batch,currentEnemyPkm.getName(),50, 750,1.2f,10,false);
         //end draw zone
         batch.end();
 
@@ -224,8 +218,8 @@ public class Game extends ApplicationAdapter {
     @Override
     public void dispose(){
         ArenaTexture.dispose();
-        yourPokemom.dispose();
-        EnemyPokemom.dispose();
+        currentEnemyPkm.getTexture().dispose();
+        currentPokemon.getTexture().dispose();
         batch.dispose();
         stage.dispose();
     }
