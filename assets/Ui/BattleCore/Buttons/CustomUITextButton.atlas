@@ -1,0 +1,48 @@
+
+CustomUITextButton.png
+size: 512, 512
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+white-pixel
+  rotate: false
+  xy: 509, 507
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+monogram
+  rotate: false
+  xy: 1, 487
+  size: 506, 21
+  orig: 506, 21
+  offset: 0, 0
+  index: -1
+barBackground
+  rotate: false
+  xy: 1, 411
+  size: 32, 6
+  orig: 32, 6
+  offset: 0, 0
+  index: -1
+button
+  rotate: false
+  xy: 1, 453
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+button_disable
+  rotate: false
+  xy: 1, 419
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+button_down
+  rotate: false
+  xy: 51, 453
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1

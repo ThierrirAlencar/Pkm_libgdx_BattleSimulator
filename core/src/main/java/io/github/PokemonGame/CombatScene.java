@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Classes.Pokemon;
 
 import java.util.Random;
@@ -22,83 +24,95 @@ import static com.badlogic.gdx.math.MathUtils.random;
 
 public class CombatScene extends ApplicationAdapter {
     //Isso é uma textura(basicamente um sprite)
-    public Texture ArenaTexture;
-    //Load Pokemom textures
-    public Texture BackVenussaur = new Texture("pokemons/Back/3.png");
-    public Texture FrontSquirtle = new Texture("pokemons/Front/7.png");
+    public Texture ArenaTexture; // Textura da arena
+
     //Area de desenho de texturas
     public SpriteBatch batch;
+
     //stage
     public Stage stage;
     //Camera
     public OrthographicCamera Camera;
-    public int x = 0;
+
+    //Shape renderes (usado para desenhar formatos como a barra de vida)
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
+
     //viewport
     private FitViewport viewport;
+
+    //tables
     private Table table = new Table();
     private Table SecondOptionsTable = new Table();
     private Boolean showSecondTable = false;
-    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur);
-    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",FrontSquirtle);
-    public Skin textSkin = new Skin(Gdx.files.internal("Ui/ui_skin.json"));
-    public BitmapFont font = textSkin.getFont("font");
 
+    //Pokemons
+    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",new Texture("pokemons/Back/3.png"),0);
+    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",new Texture("pokemons/Front/7.png"),0);
+
+    //Skins
+    public Skin textSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Buttons/CustomUITextButton.json"));
+    public BitmapFont font;//= textSkin.getFont("monogram");
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     //Create event happens when the class is created
     @Override
     public void create(){
+        //Inicializa um sprite batch (area de desenho de sprites)
         batch = new SpriteBatch();
 
+        //Configurações de Fonte
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("Ui/monogram.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.color = Color.BLACK;
+        parameter.size = 60;
+        font = generator.generateFont(parameter);
 
-        //Load progress bar
-        ShapeRenderer bar = new ShapeRenderer();
 
-        //Load another sprites
+        //Load sprites (textures).
         ArenaTexture = new Texture("Ui/BattleCore/battle.png");
 
         //set viewport and camera
         Camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         Camera.position.set(0, 0, 10); // Set camera position
 
-        Camera.update();
+        Camera.update(); // Atualiza a posição da camera baseado nas configs acima
 
+        //Cria uma viewPort
         viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),Camera);
 
+        textSkin.setScale(24f);
         //Skin
         Skin skin = new Skin(Gdx.files.internal("Ui/buttonStyle.json"));
 
-        font.getData().setScale(0.5f);
-        //Scenes management
-        stage = new Stage(viewport,batch);
+         // Modifica a escala da fonte(deixar maior ou menor)
+        //Scenes management (where all the actors do their things
+        stage = new Stage(viewport,batch); // initializes a new stage
 
 
         table.setFillParent(true); //fills the entire layout
 
-
         stage.addActor(table); // add the table to the scene
-
-        textSkin.setScale(10f);
 
         //Creates the buttons
         TextButton button = new TextButton("Atacar",textSkin);
         TextButton button2 = new TextButton("Pokemon",textSkin);
         TextButton button3 = new TextButton("Bolsa",textSkin);
         TextButton button4 = new TextButton("Fugir",textSkin);
-
+        //event listener to execute an action when the button is pressed
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 turnTrue();
             }
         });
+        //event listener to execute an action when the button is pressed
         button2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 SwitchPokemon();
             }
         });
-
-
+        textSkin.setScale(18);
         //Define a table para adicionar os botões na tela
         table.setSize(400,300);
         table.right().bottom();
@@ -130,8 +144,8 @@ public class CombatScene extends ApplicationAdapter {
         Texture BackVenussaur = new Texture("pokemons/Back/3.png");
         Texture BackCharizard = new Texture("pokemons/Back/6.png");
         switch (this.currentPokemon.getcIndex()){
-            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur);Gdx.app.log("Turning","Venussaur"); break;
-            case 3:currentPokemon = new Pokemon(6,150,"Charizard",BackCharizard);Gdx.app.log("Turning","Charizard");  break;
+            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur,0);Gdx.app.log("Turning","Venussaur"); break;
+            case 3:currentPokemon = new Pokemon(6,150,"Charizard",BackCharizard,0);Gdx.app.log("Turning","Charizard");  break;
         }
 
         Texture cls = currentPokemon.getTexture();
@@ -147,10 +161,11 @@ public class CombatScene extends ApplicationAdapter {
     }
     public void EnemyPokemonIsDead(){
         Gdx.app.log("Enemy Pokemon is dead (Switching to a new enemy","Enemy Pokemon is dead (Switching to a new enemy");
-        Random random = new Random();//Use it to create a random pokemon later
-        currentEnemyPkm = new Pokemon(9,150,"Blastoise",new Texture("pokemons/Front/9.png"));
-        currentEnemyPkm.getTexture().dispose();
+        //Use it to create a random pokemon later
+        Generators gen = new Generators();
+        currentEnemyPkm = gen.GenPkm(true);
         currentEnemyPkm.setTexture(new Texture("pokemons/Front/"+currentEnemyPkm.getcIndex()+".png"));
+        currentPokemon.setExp(currentPokemon.getExp()+10);
     }
     public void logic(){
         if(currentPokemon.getLife()<=0){
@@ -166,7 +181,7 @@ public class CombatScene extends ApplicationAdapter {
         // Essas variaveis definem o tamanho da barra de vida que é proporcional a vida
         // width = currentHealth / totalHealth * totalBarWidth;
         float width = (currentPokemon.getLife() / 100f )*300f;
-        float OpositWidth = (currentEnemyPkm.getLife() / 100f * 300f);
+        float OpositWidth = (currentEnemyPkm.getLife() / 100f) * 300f;
         float experience = 20;
         // Desenha a barra de vida preenchida (em verde)
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -177,7 +192,7 @@ public class CombatScene extends ApplicationAdapter {
 
         //Barra de experiencia
         shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.rect(920, 210, experience*5, 5);
+        shapeRenderer.rect(720, 210, experience*5, 5);
 
         //Barra de vida do adversário
         shapeRenderer.setColor(Color.RED);
@@ -201,8 +216,8 @@ public class CombatScene extends ApplicationAdapter {
         batch.draw(currentEnemyPkm.getTexture(),600,300,300,300);
         //Nome do pokemon
         font.setColor(Color.BLACK);
-        font.draw(batch,currentPokemon.getName(),720,280,1.2f,10,false);
-        font.draw(batch,currentEnemyPkm.getName(),50, 750,1.2f,10,false);
+        font.draw(batch,currentPokemon.getName(),720,280,2f,10,false);
+        font.draw(batch,currentEnemyPkm.getName(),50, 750,2f,10,false);
         //end draw zone
         batch.end();
 
@@ -217,6 +232,7 @@ public class CombatScene extends ApplicationAdapter {
     }
     @Override
     public void dispose(){
+        generator.dispose();
         ArenaTexture.dispose();
         currentEnemyPkm.getTexture().dispose();
         currentPokemon.getTexture().dispose();
