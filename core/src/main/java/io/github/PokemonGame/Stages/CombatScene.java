@@ -1,26 +1,24 @@
-package io.github.PokemonGame;
-
+package io.github.PokemonGame.Stages;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.PokemonGame.Classes.Generators;
-import io.github.PokemonGame.Classes.Pokemon;
-
-import java.util.Random;
-
+import io.github.PokemonGame.Actors.Pokemon;
 import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.math.MathUtils.random;
 
 public class CombatScene extends ApplicationAdapter {
     //Isso é uma textura(basicamente um sprite)
@@ -31,6 +29,7 @@ public class CombatScene extends ApplicationAdapter {
 
     //stage
     public Stage stage;
+
     //Camera
     public OrthographicCamera Camera;
 
@@ -46,8 +45,8 @@ public class CombatScene extends ApplicationAdapter {
     private Boolean showSecondTable = false;
 
     //Pokemons
-    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",new Texture("pokemons/Back/3.png"),0);
-    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",new Texture("pokemons/Front/7.png"),0);
+    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",new Texture("pokemons/Back/3.png"),0,100);
+    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",new Texture("pokemons/Front/7.png"),0,100);
 
     //Skins
     public Skin textSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Buttons/CustomUITextButton.json"));
@@ -87,9 +86,12 @@ public class CombatScene extends ApplicationAdapter {
          // Modifica a escala da fonte(deixar maior ou menor)
         //Scenes management (where all the actors do their things
         stage = new Stage(viewport,batch); // initializes a new stage
+        Texture texture = new Texture(Gdx.files.internal("Ui/BattleCore/BlankBoard.png"));
 
+        NinePatch drawable = new NinePatch(texture,8, 8, 8, 8);
+        NinePatchDrawable ninePatchDrawable = new NinePatchDrawable(drawable);
 
-        table.setFillParent(true); //fills the entire layout
+        table.setBackground(ninePatchDrawable);
 
         stage.addActor(table); // add the table to the scene
 
@@ -98,6 +100,7 @@ public class CombatScene extends ApplicationAdapter {
         TextButton button2 = new TextButton("Pokemon",textSkin);
         TextButton button3 = new TextButton("Bolsa",textSkin);
         TextButton button4 = new TextButton("Fugir",textSkin);
+
         //event listener to execute an action when the button is pressed
         button.addListener(new ChangeListener() {
             @Override
@@ -112,10 +115,18 @@ public class CombatScene extends ApplicationAdapter {
                 SwitchPokemon();
             }
         });
+        //Event listener to exit game when the button is pressed
+        button4.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Gdx.app.exit();
+            }
+        });
+        table.setPosition(670,0);
         textSkin.setScale(18);
         //Define a table para adicionar os botões na tela
-        table.setSize(400,300);
-        table.right().bottom();
+        table.setSize(350,200);
+        table.center();
         //table.background("Ui/BattleCore/Bordas.png");
         //table.debug();
         table.add(button).width(150).height(75).pad(15);
@@ -144,8 +155,8 @@ public class CombatScene extends ApplicationAdapter {
         Texture BackVenussaur = new Texture("pokemons/Back/3.png");
         Texture BackCharizard = new Texture("pokemons/Back/6.png");
         switch (this.currentPokemon.getcIndex()){
-            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur,0);Gdx.app.log("Turning","Venussaur"); break;
-            case 3:currentPokemon = new Pokemon(6,150,"Charizard",BackCharizard,0);Gdx.app.log("Turning","Charizard");  break;
+            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur,0,100);Gdx.app.log("Turning","Venussaur"); break;
+            case 3:currentPokemon = new Pokemon(6,150,"Charizard",BackCharizard,0,100);Gdx.app.log("Turning","Charizard");  break;
         }
 
         Texture cls = currentPokemon.getTexture();
@@ -180,25 +191,19 @@ public class CombatScene extends ApplicationAdapter {
         //é meio auto explicativo (desenha a barra de vida dos dois pokemons)
         // Essas variaveis definem o tamanho da barra de vida que é proporcional a vida
         // width = currentHealth / totalHealth * totalBarWidth;
-        float width = (currentPokemon.getLife() / 100f )*300f;
-        float OpositWidth = (currentEnemyPkm.getLife() / 100f) * 300f;
-        float experience = 20;
-        // Desenha a barra de vida preenchida (em verde)
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        //Barra de vida
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(720, 230, width, 10);
+        Skin HealthBarSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Healthbar/Healthbar.json"));
+        ProgressBar.ProgressBarStyle healthBarStyle = HealthBarSkin.get("default-horizontal", ProgressBar.ProgressBarStyle.class);
+        // Barra de vida do jogador
+        ProgressBar playerHealthBar = new ProgressBar(0, 100, 1, false, healthBarStyle);
+        playerHealthBar.setValue(currentPokemon.getLife());
+        playerHealthBar.setBounds(720, 200, 300, 30); // Posição e tamanho
+        stage.addActor(playerHealthBar);
 
-        //Barra de experiencia
-        shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.rect(720, 210, experience*5, 5);
-
-        //Barra de vida do adversário
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(50, 700,OpositWidth,10);
-        shapeRenderer.end();
-
+        ProgressBar EnemyHealthBar = new ProgressBar(0, 100, 1, false, healthBarStyle);
+        EnemyHealthBar.setValue(currentEnemyPkm.getLife());
+        EnemyHealthBar.setBounds(50, 670, 300, 30); // Posição e tamanho
+        stage.addActor(EnemyHealthBar);
     }
 
     public void draw(){
@@ -216,8 +221,8 @@ public class CombatScene extends ApplicationAdapter {
         batch.draw(currentEnemyPkm.getTexture(),600,300,300,300);
         //Nome do pokemon
         font.setColor(Color.BLACK);
-        font.draw(batch,currentPokemon.getName(),720,280,2f,10,false);
-        font.draw(batch,currentEnemyPkm.getName(),50, 750,2f,10,false);
+        font.draw(batch,currentPokemon.getName(),720,250,2f,10,false);
+        font.draw(batch,currentEnemyPkm.getName(),50, 720,2f,10,false);
         //end draw zone
         batch.end();
 

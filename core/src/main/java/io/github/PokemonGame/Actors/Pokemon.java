@@ -1,8 +1,7 @@
-package io.github.PokemonGame.Classes;
+package io.github.PokemonGame.Actors;
 
 import com.badlogic.gdx.graphics.Texture;
-import org.w3c.dom.Text;
-import com.badlogic.gdx.graphics.Texture;
+
 public class Pokemon {
     private String name;
     private int Life;
@@ -10,12 +9,14 @@ public class Pokemon {
     private int cIndex;
     private int exp=0;
     private Texture texture;
-    public Pokemon(int cIndex, int life, String name,Texture texture,int exp) {
+    private int MaxLife = 100;
+    public Pokemon(int cIndex, int life, String name,Texture texture,int exp,int maxLife) {
         this.cIndex = cIndex;
         Life = life;
         this.name = name;
         this.texture = texture;
         this.exp = exp;
+        this.MaxLife = maxLife;
     }
 
     public void setTexture(com.badlogic.gdx.graphics.Texture texture) {
