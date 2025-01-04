@@ -1,5 +1,11 @@
+![banner image](assets/banner.png)
 # ArenaMon
 This is a simple pokemon battle simulator project 
+
+# Screenshots
+<p align="center">
+<img width="200" src="img.png">
+</p>
 
 ## Dependencies
 
