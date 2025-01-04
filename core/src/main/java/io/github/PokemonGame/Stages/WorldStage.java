@@ -8,15 +8,19 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.PokemonGame.Actors.Player;
 import io.github.PokemonGame.Main;
+import io.github.PokemonGame.Maps.TileMaps;
+import org.w3c.dom.Text;
 
 import static com.badlogic.gdx.Gdx.gl;
 
 public class WorldStage extends ApplicationAdapter {
     //spritebatch
     private SpriteBatch batch = new SpriteBatch();
+
     //Camera
     private OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
     //viewport
@@ -28,6 +32,13 @@ public class WorldStage extends ApplicationAdapter {
 
     //Builder Class(Main)
     private Main builder;
+
+    //TileMap
+    private TileMaps map = new TileMaps(35,30);
+
+    public WorldStage(Main builder) {
+        this.builder = builder;
+    }
 
     @Override
     public void create() {
@@ -48,14 +59,14 @@ public class WorldStage extends ApplicationAdapter {
         logic();
         input();
     }
-    //desenha as coisas na tela
+
+    //desenha as coisas na telad
     public void draw(){
         // Clear the screen
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Draw the background using SpriteBatch
         camera.update();
-
+        this.map.drawMap(batch);
         batch.begin();
         batch.draw(player.playerTexture,player.x,player.y,64,96);
         batch.end();
@@ -65,23 +76,25 @@ public class WorldStage extends ApplicationAdapter {
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             player.playerTexture.dispose();
             player.playerTexture = new Texture("player/playerLeft.png");
-            player.x-=10;
-
+            player.x-=player.spd;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
             player.playerTexture.dispose();
             player.playerTexture = new Texture("player/playerRight.png");
-            player.x+=10;
+            player.x+=player.spd;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             player.playerTexture.dispose();
             player.playerTexture = new Texture("player/playerBack.png");
-            player.y+=10;
+            player.y+=player.spd;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S)){
             player.playerTexture.dispose();
             player.playerTexture = new Texture("player/playerFront.png");
-            player.y-=10;
+            player.y-=player.spd;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+            new Main().setScene(new CombatScene());
         }
     }
     //faz a lógica do jogo

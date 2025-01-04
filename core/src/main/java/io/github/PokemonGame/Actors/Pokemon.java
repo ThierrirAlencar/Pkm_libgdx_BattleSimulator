@@ -8,19 +8,17 @@ public class Pokemon {
     private String Texture;
     private int cIndex;
     private int exp=0;
-    private Texture texture;
+    private Texture frontTexture;
+    private Texture backTexture;
     private int MaxLife = 100;
-    public Pokemon(int cIndex, int life, String name,Texture texture,int exp,int maxLife) {
+    public Pokemon(int cIndex, int life, String name,int exp,int maxLife) {
         this.cIndex = cIndex;
         Life = life;
         this.name = name;
-        this.texture = texture;
         this.exp = exp;
         this.MaxLife = maxLife;
-    }
-
-    public void setTexture(com.badlogic.gdx.graphics.Texture texture) {
-        this.texture = texture;
+        frontTexture = new Texture("pokemons/Front/"+this.cIndex+".png");
+        backTexture = new Texture("pokemons/Back/"+this.cIndex+".png");
     }
 
     public String getName() {
@@ -31,8 +29,11 @@ public class Pokemon {
         return Life;
     }
 
-    public Texture getTexture() {
-        return texture;
+    public Texture getFrontTexture() {
+        return frontTexture;
+    }
+    public Texture getBackTexture(){
+        return backTexture;
     }
 
     public int getcIndex() {
@@ -46,5 +47,9 @@ public class Pokemon {
     }
     public int getExp(){
         return exp;
+    }
+    public void disposeTexture(){
+        frontTexture.dispose();
+        backTexture.dispose();
     }
 }

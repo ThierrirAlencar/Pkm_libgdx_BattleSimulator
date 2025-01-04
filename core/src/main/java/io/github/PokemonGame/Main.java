@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import io.github.PokemonGame.Stages.ChooseTeamScene;
 import io.github.PokemonGame.Stages.CombatScene;
 import io.github.PokemonGame.Stages.WorldStage;
 
@@ -67,11 +68,17 @@ public class Main extends ApplicationAdapter {
         btn2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setScene(new WorldStage());
-                Gdx.app.log("Scene changed","Changed Scene because button one called");
+                setScene(new WorldStage(new Main()));
+                Gdx.app.log("Scene changed","Changed Scene because button two called");
             }
         });
-
+        btn3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                setScene(new ChooseTeamScene());
+                Gdx.app.log("Scene changed","Changed Scene because button three called");
+            }
+        });
         //define stage como processador de inputs (para comandos futuros)
         Gdx.input.setInputProcessor(stage);
     }
@@ -111,7 +118,13 @@ public class Main extends ApplicationAdapter {
         if (currentScene != null) {
             currentScene.dispose(); // Libera recursos da cena anterior
         }
-        currentScene = newScene;
+        if(newScene != null){
+            Gdx.app.log("Changes Scene",newScene.toString());
+            currentScene = newScene;
+        }else {
+            this.create();
+        }
+
         if (currentScene != null) {
             currentScene.create(); // Inicializa a nova cena
         }

@@ -45,8 +45,8 @@ public class CombatScene extends ApplicationAdapter {
     private Boolean showSecondTable = false;
 
     //Pokemons
-    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",new Texture("pokemons/Back/3.png"),0,100);
-    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",new Texture("pokemons/Front/7.png"),0,100);
+    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",0,100);
+    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",0,100);
 
     //Skins
     public Skin textSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Buttons/CustomUITextButton.json"));
@@ -151,17 +151,10 @@ public class CombatScene extends ApplicationAdapter {
         this.currentEnemyPkm.Damage(10);
     }
     public void SwitchPokemon(){
-
-        Texture BackVenussaur = new Texture("pokemons/Back/3.png");
-        Texture BackCharizard = new Texture("pokemons/Back/6.png");
         switch (this.currentPokemon.getcIndex()){
-            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",BackVenussaur,0,100);Gdx.app.log("Turning","Venussaur"); break;
-            case 3:currentPokemon = new Pokemon(6,150,"Charizard",BackCharizard,0,100);Gdx.app.log("Turning","Charizard");  break;
+            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",0,100);Gdx.app.log("Turning","Venussaur"); break;
+            case 3:currentPokemon = new Pokemon(6,150,"Charizard",0,100);Gdx.app.log("Turning","Charizard");  break;
         }
-
-        Texture cls = currentPokemon.getTexture();
-        cls.dispose();
-        currentPokemon.setTexture(new Texture("pokemons/Back/"+currentPokemon.getcIndex()+".png"));
     }
     //where we will read players commands
     public void input(){
@@ -175,7 +168,6 @@ public class CombatScene extends ApplicationAdapter {
         //Use it to create a random pokemon later
         Generators gen = new Generators();
         currentEnemyPkm = gen.GenPkm(true);
-        currentEnemyPkm.setTexture(new Texture("pokemons/Front/"+currentEnemyPkm.getcIndex()+".png"));
         currentPokemon.setExp(currentPokemon.getExp()+10);
     }
     public void logic(){
@@ -217,8 +209,8 @@ public class CombatScene extends ApplicationAdapter {
         //start draw zone
         batch.begin();
         batch.draw(ArenaTexture, 0, 0, Camera.viewportWidth, Camera.viewportHeight);
-        batch.draw(currentPokemon.getTexture(),100,0,300,300);
-        batch.draw(currentEnemyPkm.getTexture(),600,300,300,300);
+        batch.draw(currentPokemon.getBackTexture(),100,0,300,300);
+        batch.draw(currentEnemyPkm.getFrontTexture(),600,300,300,300);
         //Nome do pokemon
         font.setColor(Color.BLACK);
         font.draw(batch,currentPokemon.getName(),720,250,2f,10,false);
@@ -239,8 +231,8 @@ public class CombatScene extends ApplicationAdapter {
     public void dispose(){
         generator.dispose();
         ArenaTexture.dispose();
-        currentEnemyPkm.getTexture().dispose();
-        currentPokemon.getTexture().dispose();
+        currentEnemyPkm.disposeTexture();
+        currentPokemon.disposeTexture();
         batch.dispose();
         stage.dispose();
     }

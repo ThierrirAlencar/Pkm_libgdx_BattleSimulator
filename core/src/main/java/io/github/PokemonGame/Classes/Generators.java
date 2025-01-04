@@ -27,6 +27,6 @@ public class Generators {
             texture = new Texture("pokemons/Back/"+cIndex+".png");
         }
 
-        return  new Pokemon(cIndex,100,PkmNames.get(cIndex),texture,0,100);
+        return  new Pokemon(cIndex,100,PkmNames.get(cIndex),0,100);
     }
 }
