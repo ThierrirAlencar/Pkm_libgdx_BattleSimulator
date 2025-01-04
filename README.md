@@ -1,23 +1,26 @@
 ![banner image](assets/banner.png)
-# ArenaMon
-This is a simple pokemon battle simulator project 
-
-# Screenshots
+# ArenaMon 🐲
 <p align="center">
-<img width="200" src="img.png">
+Este é um simulador de batalhas pokemon simples, para colocar em prática alguns dos conceitos principais da programação orientada a objetos assim como o funcionamento de diferentes tecnlogias do ambiente java. 
 </p>
 
-## Dependencies
+# Screenshots 📷
+<p align="center">
+<img width="200" src="assets/img1.png">
+<img width="200" src="assets/img.png">
+</p>
+
+# Dependencies ⚙️
 
 LibGDX: https://libgdx.com
 
 Java: https://www.java.com
 
-## Running the game
+# Running the game 🚀
 
 .\gradlew.bat run
 
-## Documentation
+# Documentation 📰
 
 ## Techs
 **LibGdx** - Framework para java usado para desenvolvimento de jogos
@@ -92,3 +95,14 @@ Diferentemente de outras classes os atores podem ser vizualizados pelo jogador d
 
 1. Personagem do jogador: Este é o actor do jogador. Ele é representado por uma textura do personagem por sua posição x e y no cenário e por sua velocidade, assim como os métodos que alteram esses valores.
 2. Pokemons: Este actor carrega a estrutura e os métodos de um "pokemon", carrega sua textura e informações e métodos que permitem sua utilização pelo jogador.
+
+
+
+# Credits 🤓
+
+
+
+**public assets** 
+- [Pkm BG](https://www.deviantart.com/zeo254/art/battle-background-GBA-597913776)
+- [Pkm BG2 - Pack](www.deviantart.com/kwharever/art/Battle-Backgrounds-Outdated-FREE-TO-USE-766720249)
+- [Pokemon Images and many other sprites](https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/)

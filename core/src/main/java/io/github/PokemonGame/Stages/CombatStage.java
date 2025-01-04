@@ -18,6 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Actors.Pokemon;
+
+import java.util.Random;
+
 import static com.badlogic.gdx.Gdx.gl;
 
 public class CombatStage extends ApplicationAdapter {
@@ -68,7 +71,7 @@ public class CombatStage extends ApplicationAdapter {
 
 
         //Load sprites (textures).
-        ArenaTexture = new Texture("Ui/BattleCore/battle.png");
+        ArenaTexture = new Texture("Ui/BattleCore/battle1.png");
 
         //set viewport and camera
         Camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
@@ -169,6 +172,11 @@ public class CombatStage extends ApplicationAdapter {
         Generators gen = new Generators();
         currentEnemyPkm = gen.GenPkm(true);
         currentPokemon.setExp(currentPokemon.getExp()+10);
+        Random rand = new Random();
+
+        int random = rand.nextInt(5)+1;
+        ArenaTexture.dispose();
+        ArenaTexture = new Texture("Ui/BattleCore/battle"+random+".png");
     }
     public void logic(){
         if(currentPokemon.getLife()<=0){
