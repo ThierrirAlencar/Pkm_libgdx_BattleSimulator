@@ -7,7 +7,7 @@ public class Player extends Actor {
     public Texture playerTexture;
     public int x;
     public int y;
-    public int spd = 5;
+    public int spd = 3;
     public Player(Texture playerTexture,int x, int y) {
         this.playerTexture = playerTexture;
         this.x = x;this.y = y;

@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.PokemonGame.Actors.Player;
 import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Actors.Pokemon;
 
@@ -41,6 +42,7 @@ public class CombatStage extends ApplicationAdapter {
 
     //viewport
     private FitViewport viewport;
+
 
     //tables
     private Table table = new Table();

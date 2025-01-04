@@ -6,8 +6,9 @@ Este é um simulador de batalhas pokemon simples, para colocar em prática algun
 
 # Screenshots 📷
 <p align="center">
-<img width="200" src="assets/img1.png">
-<img width="200" src="assets/img.png">
+<img width="300" src="assets/img1.png">
+<img width="300" src="assets/img.png">
+<img width="300" src="assets/img2.png">
 </p>
 
 # Dependencies ⚙️
@@ -67,6 +68,14 @@ em nossa implementação utilizamos um determinado padrão para criar stages [ve
 1. [**ChooseTeamStage**](core/src/main/java/io/github/PokemonGame/Stages/ChooseTeamScene.java) - Stágio onde ocorre a seleção de um time para o jogador. Aqui introduzimos a lógica de seleção de times permitindo a interação do usuário com esse sistema e um feedback visual para estas interações. 
 2. [**CombatStage**](core/src/main/java/io/github/PokemonGame/Stages/CombatStage.java) - Stágio onde ocorre o "combate". Aqui desenvolvemos a lógica de batalha interpretando os comandos do usuário e retornando um feedback visual. 
 
+### Estrutura padrão de uma stage
+
+``create`` - método executado quando a stage é criada
+
+``render`` - método executado a cada frame do jogo
+
+``dispose`` - método executado quando a stage é finalizada (utilizado para limpar mémoria e processamento)
+
 ## [Generators](core/src/main/java/io/github/PokemonGame/Classes)
 Classes utilizadas para construir atores de modo aleátorio (ou não). 
 
@@ -103,6 +112,6 @@ Diferentemente de outras classes os atores podem ser vizualizados pelo jogador d
 
 
 **public assets** 
-- [Pkm BG](https://www.deviantart.com/zeo254/art/battle-background-GBA-597913776)
-- [Pkm BG2 - Pack](www.deviantart.com/kwharever/art/Battle-Backgrounds-Outdated-FREE-TO-USE-766720249)
+- [Pkm BG By Zeo254](https://www.deviantart.com/zeo254/art/battle-background-GBA-597913776)
+- [Pkm BG2 - Pack By kWharever](www.deviantart.com/kwharever/art/Battle-Backgrounds-Outdated-FREE-TO-USE-766720249)
 - [Pokemon Images and many other sprites](https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/)
