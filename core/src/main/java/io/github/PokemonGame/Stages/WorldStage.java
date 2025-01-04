@@ -8,12 +8,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.PokemonGame.Actors.Player;
 import io.github.PokemonGame.Main;
 import io.github.PokemonGame.Maps.TileMaps;
-import org.w3c.dom.Text;
 
 import static com.badlogic.gdx.Gdx.gl;
 
@@ -94,7 +92,7 @@ public class WorldStage extends ApplicationAdapter {
             player.y-=player.spd;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            new Main().setScene(new CombatScene());
+            new Main().setScene(new CombatStage());
         }
     }
     //faz a lógica do jogo

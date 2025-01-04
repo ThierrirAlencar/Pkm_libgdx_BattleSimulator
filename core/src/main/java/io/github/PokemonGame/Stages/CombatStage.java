@@ -20,7 +20,7 @@ import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Actors.Pokemon;
 import static com.badlogic.gdx.Gdx.gl;
 
-public class CombatScene extends ApplicationAdapter {
+public class CombatStage extends ApplicationAdapter {
     //Isso é uma textura(basicamente um sprite)
     public Texture ArenaTexture; // Textura da arena
 

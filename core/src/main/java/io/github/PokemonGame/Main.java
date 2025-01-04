@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import io.github.PokemonGame.Stages.ChooseTeamScene;
-import io.github.PokemonGame.Stages.CombatScene;
+import io.github.PokemonGame.Stages.CombatStage;
 import io.github.PokemonGame.Stages.WorldStage;
 
 import static com.badlogic.gdx.Gdx.gl;
@@ -61,7 +61,7 @@ public class Main extends ApplicationAdapter {
         btn1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setScene(new CombatScene());
+                setScene(new CombatStage());
                 Gdx.app.log("Scene changed","Changed Scene because button one called");
             }
         });
