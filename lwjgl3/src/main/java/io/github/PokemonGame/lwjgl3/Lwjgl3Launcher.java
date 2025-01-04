@@ -9,8 +9,6 @@ public class Lwjgl3Launcher {
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         createApplication();
-
-
     }
 
     private static Lwjgl3Application createApplication() {
@@ -34,7 +32,7 @@ public class Lwjgl3Launcher {
         configuration.setWindowedMode(1024,768);
         configuration.setResizable(false);
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
-        configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
+        configuration.setWindowIcon("6.png");
         return configuration;
     }
 }

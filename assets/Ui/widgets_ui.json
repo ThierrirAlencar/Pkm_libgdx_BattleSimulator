@@ -5,7 +5,13 @@
 		"scaledSize": -1,
 		"markupEnabled": false,
 		"flip": false
-	}
+	},
+    "custom_font": {
+      "file":"monogram.ttf",
+      "scaledSize": -1,
+      "markupEnabled": false,
+      "flip": false
+    }
 },
 "com.badlogic.gdx.graphics.Color": {
 	"RGBA_0_0_0_255": {

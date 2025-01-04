@@ -1,0 +1,71 @@
+{
+"com.badlogic.gdx.graphics.Color": {
+	"RGBA_16_255_0_255": {
+		"r": 0.0627451,
+		"g": 1,
+		"b": 0,
+		"a": 1
+	},
+	"RGBA_255_0_0_255": {
+		"r": 1,
+		"g": 0,
+		"b": 0,
+		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
+	"Sla": {
+		"name": "white-pixel",
+		"color": "RGBA_255_0_0_255",
+		"minHeight": 20
+	},
+	"green": {
+		"name": "white-pixel",
+		"color": "RGBA_16_255_0_255"
+	}
+},
+"com.kotcrab.vis.ui.Sizes": {
+	"default": {
+		"scaleFactor": 1,
+		"spacingBottom": 8,
+		"spacingRight": 6,
+		"buttonBarSpacing": 10,
+		"menuItemIconSize": 22,
+		"borderSize": 1,
+		"spinnerButtonHeight": 12,
+		"spinnerFieldSize": 50,
+		"fileChooserViewModeBigIconsSize": 200,
+		"fileChooserViewModeMediumIconsSize": 128,
+		"fileChooserViewModeSmallIconsSize": 64,
+		"fileChooserViewModeListWidthSize": 150
+	}
+},
+"com.kotcrab.vis.ui.widget.Separator$SeparatorStyle": {
+	"default": {
+		"thickness": 20
+	},
+	"menu": {
+		"thickness": 1
+	}
+},
+"com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane$TabbedPaneStyle": {
+	"default": {
+		"vertical": false,
+		"draggable": false
+	}
+},
+"com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle": {
+	"default": {
+		"height": -1,
+		"segmentWidth": 150,
+		"segmentOverflow": 10
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle": {
+	"default-horizontal": {
+		"background": "barBackground",
+		"knobBefore": "green",
+		"knobAfter": "Sla"
+	}
+}
+}
