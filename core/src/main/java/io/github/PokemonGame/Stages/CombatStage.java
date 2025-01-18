@@ -4,22 +4,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.PokemonGame.Actors.Player;
 import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Actors.Pokemon;
+import io.github.PokemonGame.Classes.PokedexController;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static com.badlogic.gdx.Gdx.gl;
@@ -47,11 +52,14 @@ public class CombatStage extends ApplicationAdapter {
     //tables
     private Table table = new Table();
     private Table SecondOptionsTable = new Table();
-    private Boolean showSecondTable = false;
+    private int showSecondTable = -1;
 
     //Pokemons
-    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",0,100);
-    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",0,100);
+    private PokedexController PDex = new PokedexController();
+    private Pokemon charizard = PDex.getPkm(6);
+    private Pokemon venussaur = PDex.getPkm(3);
+    public Pokemon currentPokemon = charizard;
+    public Pokemon currentEnemyPkm;
 
     //Skins
     public Skin textSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Buttons/CustomUITextButton.json"));
@@ -140,12 +148,40 @@ public class CombatStage extends ApplicationAdapter {
         table.add(button3).width(150).height(75).pad(15);
         table.add(button4).width(150).height(75).pad(15);
 
+        SecondOptionsTable = new Table();
+        SecondOptionsTable.setSize(500,200);
+        SecondOptionsTable.center();
+        setupSecondOptionsTable();
+        stage.addActor(SecondOptionsTable);
 
 
         //define stage como processador de inputs (para comandos futuros)
         Gdx.input.setInputProcessor(stage);
-    }
 
+        Generators gen = new Generators();
+        currentEnemyPkm = gen.GenPkm(true);
+    }
+    public void setupSecondOptionsTable(){
+        //Limpar os botões
+        SecondOptionsTable.clear();
+        //Preencher com novos botões
+        for(int i=0;i<4;i++){
+            if(i == 2){
+                SecondOptionsTable.row();
+            }
+            TextButton btn = new TextButton(currentPokemon.getMoves().get(i).name,textSkin);
+            SecondOptionsTable.add(btn).width(200).height(75).pad(30);
+
+            final int moveIndex = i;
+            btn.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    currentPokemon.getMoves().get(moveIndex).atack(currentEnemyPkm);
+                }
+            });
+        }
+
+    }
     @Override
     public void render(){
         input();
@@ -153,13 +189,17 @@ public class CombatStage extends ApplicationAdapter {
         draw();
     }
     public void turnTrue(){
-        this.currentEnemyPkm.Damage(10);
+        //this.currentEnemyPkm.Damage(10);
+        showSecondTable*=-1;
+        Gdx.app.log("ShowSecondTable",""+showSecondTable);
     }
     public void SwitchPokemon(){
         switch (this.currentPokemon.getcIndex()){
-            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",0,100);Gdx.app.log("Turning","Venussaur"); break;
-            case 3:currentPokemon = new Pokemon(6,150,"Charizard",0,100);Gdx.app.log("Turning","Charizard");  break;
+            case 6:currentPokemon = venussaur; break;
+            case 3:currentPokemon = charizard;  break;
         }
+        setupSecondOptionsTable();
+        Gdx.app.log("Turning",currentPokemon.getName());
     }
     //where we will read players commands
     public void input(){
@@ -173,9 +213,7 @@ public class CombatStage extends ApplicationAdapter {
         //Use it to create a random pokemon later
         Generators gen = new Generators();
         currentEnemyPkm = gen.GenPkm(true);
-        currentPokemon.setExp(currentPokemon.getExp()+10);
         Random rand = new Random();
-
         int random = rand.nextInt(5)+1;
         ArenaTexture.dispose();
         ArenaTexture = new Texture("Ui/BattleCore/battle"+random+".png");
@@ -187,6 +225,12 @@ public class CombatStage extends ApplicationAdapter {
         if(currentEnemyPkm.getLife()<=0){
             EnemyPokemonIsDead();
         }
+
+        if(showSecondTable==1){
+            SecondOptionsTable.setPosition(100,0);
+        }else {
+            SecondOptionsTable.setPosition(50,11110);
+        }
     }
 
     public void drawHealthBar(){
@@ -197,19 +241,18 @@ public class CombatStage extends ApplicationAdapter {
         Skin HealthBarSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Healthbar/Healthbar.json"));
         ProgressBar.ProgressBarStyle healthBarStyle = HealthBarSkin.get("default-horizontal", ProgressBar.ProgressBarStyle.class);
         // Barra de vida do jogador
-        ProgressBar playerHealthBar = new ProgressBar(0, 100, 1, false, healthBarStyle);
+        ProgressBar playerHealthBar = new ProgressBar(0, currentPokemon.getMaxLife(), 1, false, healthBarStyle);
         playerHealthBar.setValue(currentPokemon.getLife());
         playerHealthBar.setBounds(720, 200, 300, 30); // Posição e tamanho
         stage.addActor(playerHealthBar);
 
-        ProgressBar EnemyHealthBar = new ProgressBar(0, 100, 1, false, healthBarStyle);
+        ProgressBar EnemyHealthBar = new ProgressBar(0, currentEnemyPkm.getMaxLife(), 1, false, healthBarStyle);
         EnemyHealthBar.setValue(currentEnemyPkm.getLife());
         EnemyHealthBar.setBounds(50, 670, 300, 30); // Posição e tamanho
         stage.addActor(EnemyHealthBar);
     }
 
     public void draw(){
-
         // Clear the screen
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

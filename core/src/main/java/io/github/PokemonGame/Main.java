@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import io.github.PokemonGame.Stages.ChooseTeamScene;
 import io.github.PokemonGame.Stages.CombatStage;
 import io.github.PokemonGame.Stages.WorldRenderStage;
-import io.github.PokemonGame.Stages.WorldStage;
 
 import static com.badlogic.gdx.Gdx.gl;
 

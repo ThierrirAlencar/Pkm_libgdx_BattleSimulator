@@ -7,11 +7,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.github.PokemonGame.Actors.Player;
 import io.github.PokemonGame.Main;
@@ -41,6 +41,8 @@ public class WorldRenderStage extends ApplicationAdapter {
     private static final int VISIBLE_TILES_X = 25;
     private static final int VISIBLE_TILES_Y = 18;
 
+    //Animation
+    private float elapsedTime = 0;
     @Override
     public void create() {
         Gdx.app.log("Stage called", "render world demonstration");
@@ -74,6 +76,7 @@ public class WorldRenderStage extends ApplicationAdapter {
 
     @Override
     public void render() {
+        elapsedTime += Gdx.graphics.getDeltaTime();
         draw();
         input();
     }
@@ -86,38 +89,26 @@ public class WorldRenderStage extends ApplicationAdapter {
         tmxRender.render();
 
         batch.begin();
-        batch.draw(player.playerTexture,player.x,player.y);
+        if(player.isRunning){
+            batch.draw((TextureRegion) player.currentAnimation.getKeyFrame(elapsedTime, true),player.x,player.y);
+        }else {
+            batch.draw(player.playerTexture,player.x,player.y);
+        }
         batch.end();
     }
 
     //recebe comandos do teclado
     public void input(){
+        player.move();
+        //Um monte de variaveis para calcular os limites da camera
+        float mapWidth = map.getProperties().get("width", Integer.class) * TILE_SIZE;
+        float mapHeight = map.getProperties().get("height", Integer.class) * TILE_SIZE;
+        float cameraHalfWidth = camera.viewportWidth / 2;
+        float cameraHalfHeight = camera.viewportHeight / 2;
+        float cameraX = Math.max(cameraHalfWidth, Math.min(player.x, mapWidth - cameraHalfWidth));
+        float cameraY = Math.max(cameraHalfHeight, Math.min(player.y, mapHeight - cameraHalfHeight));
 
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            player.playerTexture.dispose();
-            player.playerTexture = new Texture("player/playerLeft.png");
-            player.x-=player.spd;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            player.playerTexture.dispose();
-            player.playerTexture = new Texture("player/playerRight.png");
-            player.x+=player.spd;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            player.playerTexture.dispose();
-            player.playerTexture = new Texture("player/playerBack.png");
-            player.y+=player.spd;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            player.playerTexture.dispose();
-            player.playerTexture = new Texture("player/playerFront.png");
-            player.y-=player.spd;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            new Main().setScene(new CombatStage());
-        }
-
-        camera.position.set(player.x,player.y,10);
+        camera.position.set(cameraX, cameraY, 0);
     }
 
     @Override

@@ -65,10 +65,16 @@ public class ChooseTeamScene extends ApplicationAdapter {
         for (int i = 0;i<dexClass.getSelection().size();i++){
             Pokemon p = dexClass.getSelection().get(i);
             if(i != 1){
+                font.setColor(1,1,1,.5f);
                 batch.setColor(1,1,1,.5f);
             }
-            batch.draw(p.getFrontTexture(),75+((i%3)*10),550-(i*150),150,150);
+            font.draw(batch,p.getName(),200,640-(i*150));
+            font.draw(batch,"Pokedex: "+p.getcIndex()+" HP:"+p.getLife(),200,600-(i*150));
+            font.draw(batch,"Type " + p.getType(),200,550-(i*150));
+            batch.draw(p.getFrontTexture(),30+((i%2)*30),550-(i*150),150,150);
             batch.setColor(1,1,1,1);
+            font.setColor(1,1,1,1);
+
         }
         font.draw(batch,"Use Arrow Keys to move and space to select",400,80,5,1,false);
         batch.end();
