@@ -1,0 +1,5 @@
+- deletrei todo o método main de Batalha
+- removi o scanner de batalha pois a escolha será feita na interface
+- batalha nao extende mais pokemon
+- substitui o método contrutor de batalha para um que se adeque melhor
+- Substitui o swtich para repassar o ataque com o sistema que ja existe no jogo

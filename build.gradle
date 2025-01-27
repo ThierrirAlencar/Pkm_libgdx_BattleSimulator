@@ -9,7 +9,7 @@ buildscript {
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-    classpath "com.badlogicgames.gdx:gdx-tools:1.13.1"
+    classpath "com.badlogicgames.gdx:gdx-tools:1.12.1"
   }
 }
 
@@ -69,12 +69,12 @@ subprojects {
   }
   dependencies {
     // Core libGDX dependencies
-    implementation "com.badlogicgames.gdx:gdx:1.13.1"
-    implementation "com.badlogicgames.gdx:gdx-box2d:1.13.1"
+    implementation "com.badlogicgames.gdx:gdx:1.12.1"
+    implementation "com.badlogicgames.gdx:gdx-box2d:1.12.1"
 
     // Add native dependencies for specific platforms
-    runtimeOnly "com.badlogicgames.gdx:gdx-platform:1.13.1:natives-desktop"
-    runtimeOnly "com.badlogicgames.gdx:gdx-box2d-platform:1.13.1:natives-desktop"
+    runtimeOnly "com.badlogicgames.gdx:gdx-platform:1.12.1:natives-desktop"
+    runtimeOnly "com.badlogicgames.gdx:gdx-box2d-platform:1.12.1:natives-desktop"
   }
 }
 

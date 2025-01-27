@@ -4,27 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.PokemonGame.Actors.Player;
+import io.github.PokemonGame.Classes.Battle.Batalha;
 import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Classes.PokedexController;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import static com.badlogic.gdx.Gdx.gl;
@@ -41,9 +36,6 @@ public class CombatStage extends ApplicationAdapter {
 
     //Camera
     public OrthographicCamera Camera;
-
-    //Shape renderes (usado para desenhar formatos como a barra de vida)
-    private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     //viewport
     private FitViewport viewport;
@@ -66,6 +58,9 @@ public class CombatStage extends ApplicationAdapter {
     public BitmapFont font;//= textSkin.getFont("monogram");
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+
+    //Lógica (parte de Laura e etc)
+    private Batalha batalha;
     //Create event happens when the class is created
     @Override
     public void create(){
@@ -93,6 +88,7 @@ public class CombatStage extends ApplicationAdapter {
         viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),Camera);
 
         textSkin.setScale(24f);
+
         //Skin
         Skin skin = new Skin(Gdx.files.internal("Ui/buttonStyle.json"));
 
@@ -148,6 +144,8 @@ public class CombatStage extends ApplicationAdapter {
         table.add(button3).width(150).height(75).pad(15);
         table.add(button4).width(150).height(75).pad(15);
 
+
+        //Configura a table de combate
         SecondOptionsTable = new Table();
         SecondOptionsTable.setSize(500,200);
         SecondOptionsTable.center();
@@ -160,6 +158,8 @@ public class CombatStage extends ApplicationAdapter {
 
         Generators gen = new Generators();
         currentEnemyPkm = gen.GenPkm(true);
+
+        batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
     }
     public void setupSecondOptionsTable(){
         //Limpar os botões
@@ -176,7 +176,8 @@ public class CombatStage extends ApplicationAdapter {
             btn.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    currentPokemon.getMoves().get(moveIndex).atack(currentEnemyPkm);
+                    //currentPokemon.getMoves().get(moveIndex).atack(currentEnemyPkm);
+                    batalha.atacarOponente(moveIndex); //Utiliza a lógica de batalha para atacar o pokemon do adversário
                 }
             });
         }
@@ -198,6 +199,7 @@ public class CombatStage extends ApplicationAdapter {
             case 6:currentPokemon = venussaur; break;
             case 3:currentPokemon = charizard;  break;
         }
+        batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
         setupSecondOptionsTable();
         Gdx.app.log("Turning",currentPokemon.getName());
     }
@@ -214,6 +216,7 @@ public class CombatStage extends ApplicationAdapter {
         Generators gen = new Generators();
         currentEnemyPkm = gen.GenPkm(true);
         Random rand = new Random();
+        batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
         int random = rand.nextInt(5)+1;
         ArenaTexture.dispose();
         ArenaTexture = new Texture("Ui/BattleCore/battle"+random+".png");

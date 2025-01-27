@@ -10,15 +10,19 @@ import java.util.Random;
 
 public class Generators {
 
+    //Carrega um pokemon aleatório de uma lista carregada da classe dex
     public Pokemon GenPkm(Boolean Oposit){
         //Gera um pokemon aleatorio
         PokedexController pDex = new PokedexController();
         ArrayList<Pokemon> Dex = pDex.getDex();
         Random rand = new Random();
         int cIndex = rand.nextInt(Dex.size()-1)+1;
-        return  Dex.get(cIndex);
+        Pokemon pkm = Dex.get(cIndex);
+
+        return pkm;
     }
 
+    //Gera moves para um pokemon em especifico
     public ArrayList<move> genMoveList(TYPES pkmType){
         ArrayList<move> list = new ArrayList<>(4);
         Random rand = new Random();

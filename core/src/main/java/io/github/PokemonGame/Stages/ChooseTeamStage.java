@@ -13,7 +13,7 @@ import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Classes.PokedexController;
 
 
-public class ChooseTeamScene extends ApplicationAdapter {
+public class ChooseTeamStage extends ApplicationAdapter {
     //Sprite Batch
     private SpriteBatch batch;
 

@@ -1,5 +1,6 @@
 package io.github.PokemonGame.interfaces;
 
+import com.badlogic.gdx.Gdx;
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Types.EFFECTS;
 import io.github.PokemonGame.Types.TYPES;
@@ -26,5 +27,6 @@ public class move extends TypeMove{
                  TargetPokemon.Damage(damage);
                  break;
         }
+        Gdx.app.log("Atack","The pokemon attacked "+TargetPokemon.getName()+" and has caused "+damage+" of damage" );
     }
 }

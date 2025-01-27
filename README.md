@@ -10,10 +10,10 @@ Este é um simulador de batalhas pokemon simples, para colocar em prática algun
 2. [Dependencias](#dependencies-)
 3. [Running the Game](#running-the-game-)
 4. [Documentation](#documentation-)
-    - [Techs](##Techs-)
-    - [Folders](##Pastas-)
+    - [Techs](#Techs-)
+    - [Folders](#Pastas-)
     - [Classes and Packages](##Classes-e-Packages-)
-    - [Stages](##Stages)
+    - [Stages](#Stages)
 5. [Credits](#credits-)
 
 # Screenshots 📷
@@ -26,6 +26,7 @@ Este é um simulador de batalhas pokemon simples, para colocar em prática algun
 # Dependencies ⚙️
 
 LibGDX: https://libgdx.com
+- Box2D
 
 Java: https://www.java.com
 
@@ -75,6 +76,7 @@ em nossa implementação utilizamos um determinado padrão para criar stages [ve
 
 É dentro da stage que controlamos quais atores estarão presentes em cada momento, e tambem desenhamos na tela as implicações da interação visual entre o usuário e os nosso atores. Contruimos dentro de um stage a lógica, recebemos os comandos do usuário e desenhamos a resposta a tudo isso na tela.
 
+Uma stage pode extender classes abstratas ou interfaces nativas do LibGDX como AplicationAdapter ou Game. Em nosso jogo optei por utilizar a interface AplicationAdapter.
 ### Exemplos de stages
 
 1. [**ChooseTeamStage**](core/src/main/java/io/github/PokemonGame/Stages/ChooseTeamScene.java) - Stágio onde ocorre a seleção de um time para o jogador. Aqui introduzimos a lógica de seleção de times permitindo a interação do usuário com esse sistema e um feedback visual para estas interações. 
@@ -93,7 +95,11 @@ em nossa implementação utilizamos um determinado padrão para criar stages [ve
         - Desenhar atores
         - Desenhar interfaces Graficas
     - logic ( Lógica de jogo)
+        - Controlar vida de personagens
+        - Checar eventos que estão acontecendo a todo instante
     - Input ( Receber comandos do teclado do usuário)
+        - Mover o jogador
+        - Interagir com a interface
 
 ``dispose`` - método executado quando a stage é finalizada (utilizado para limpar mémoria e processamento)
 

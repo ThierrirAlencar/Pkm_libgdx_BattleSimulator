@@ -86,6 +86,7 @@ public class WorldRenderStage extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         tmxRender.setView(camera);
+
         tmxRender.render();
 
         batch.begin();
