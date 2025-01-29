@@ -93,7 +93,7 @@ public class WorldRenderStage extends ApplicationAdapter {
         if(player.isRunning){
             batch.draw((TextureRegion) player.currentAnimation.getKeyFrame(elapsedTime, true),player.x,player.y);
         }else {
-            batch.draw(player.playerTexture,player.x,player.y);
+            batch.draw(player.currentTexture,player.x,player.y);
         }
         batch.end();
     }

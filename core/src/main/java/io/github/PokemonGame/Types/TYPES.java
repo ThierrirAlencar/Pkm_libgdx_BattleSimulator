@@ -1,5 +1,22 @@
 package io.github.PokemonGame.Types;
 
 public enum TYPES {
-    NORMAL, FIRE, WATER, ELETRIC, PLANT, POISON, DRAGON, STONE, GROUND, STEEL, FLYING, BUG,FAIRY
+    NORMAL,
+    FIRE,
+    WATER,
+    GRASS,
+    ELETRIC,
+    ICE,
+    FIGHTING,
+    POISON,
+    GROUND,
+    FLYING,
+    BUG,
+    ROCK,
+    PSYCHIC,
+    GHOST,
+    DRAGON,
+    STEEL,
+    FAIRY,
+    DARK
 }

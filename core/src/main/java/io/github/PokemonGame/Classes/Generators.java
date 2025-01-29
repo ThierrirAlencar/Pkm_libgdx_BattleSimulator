@@ -1,6 +1,5 @@
 package io.github.PokemonGame.Classes;
 
-import com.badlogic.gdx.graphics.Texture;
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Types.TYPES;
 import io.github.PokemonGame.interfaces.move;

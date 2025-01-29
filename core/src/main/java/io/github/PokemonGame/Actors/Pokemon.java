@@ -6,7 +6,7 @@ import io.github.PokemonGame.interfaces.move;
 
 import java.util.ArrayList;
 
-public class Pokemon {
+public class Pokemon extends Actor{
     private String name;
     private int Life;
     private int cIndex;

@@ -3,3 +3,4 @@
 - batalha nao extende mais pokemon
 - substitui o método contrutor de batalha para um que se adeque melhor
 - Substitui o swtich para repassar o ataque com o sistema que ja existe no jogo
+- Refiz

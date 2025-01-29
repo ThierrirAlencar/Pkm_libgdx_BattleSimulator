@@ -11,7 +11,7 @@ import io.github.PokemonGame.Stages.CombatStage;
 
 public class Player extends Actor {
     //Textures
-    public Texture playerTexture;
+    public Texture currentTexture;
     public Texture FrontAnim = new Texture("player/walkingAnimFront.png");
     public Texture BackAnim = new Texture("player/walkingAnimBack.png");
     public Texture LeftAnim = new Texture("player/walkingAnimLeft.png");
@@ -33,7 +33,7 @@ public class Player extends Actor {
     public boolean isRunning = false;
 
     public Player(Texture playerTexture,int x, int y) {
-        this.playerTexture = playerTexture;
+        this.currentTexture = playerTexture;
         this.x = x;this.y = y;
 
         //Importa o sprite da textura e transforma em uma animção
@@ -64,26 +64,26 @@ public class Player extends Actor {
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             currentAnimation = LeftAnimation;
-            playerTexture = new Texture("player/playerLeft.png");
+            currentTexture = new Texture("player/playerLeft.png");
             x -= spd;
             isRunning = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             currentAnimation = rightAnimation;
-            playerTexture = new Texture("player/playerRight.png");
+            currentTexture = new Texture("player/playerRight.png");
             x += spd;
             isRunning = true;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             currentAnimation = backAnimation;
-            playerTexture = new Texture("player/playerBack.png");
+            currentTexture = new Texture("player/playerBack.png");
             y += spd;
             isRunning = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             currentAnimation = frontAnimation;
-            playerTexture = new Texture("player/playerFront.png");
+            currentTexture = new Texture("player/playerFront.png");
             y -= spd;
             isRunning = true;
         }
