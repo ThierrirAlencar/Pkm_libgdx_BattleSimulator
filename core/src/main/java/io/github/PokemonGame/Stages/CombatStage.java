@@ -1,12 +1,12 @@
 package io.github.PokemonGame.Stages;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -16,15 +16,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.PokemonGame.Actors.Player;
+import io.github.PokemonGame.Classes.Battle.Batalha;
 import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Actors.Pokemon;
+import io.github.PokemonGame.Classes.PokedexController;
+import io.github.PokemonGame.Classes.TeamController;
+import io.github.PokemonGame.Main;
+import io.github.PokemonGame.Types.TYPES;
 
 import java.util.Random;
 
 import static com.badlogic.gdx.Gdx.gl;
 
 public class CombatStage extends ApplicationAdapter {
+    //Classe pai
+    private Main parent;
+
+
     //Isso é uma textura(basicamente um sprite)
     public Texture ArenaTexture; // Textura da arena
 
@@ -37,9 +45,6 @@ public class CombatStage extends ApplicationAdapter {
     //Camera
     public OrthographicCamera Camera;
 
-    //Shape renderes (usado para desenhar formatos como a barra de vida)
-    private ShapeRenderer shapeRenderer = new ShapeRenderer();
-
     //viewport
     private FitViewport viewport;
 
@@ -47,22 +52,46 @@ public class CombatStage extends ApplicationAdapter {
     //tables
     private Table table = new Table();
     private Table SecondOptionsTable = new Table();
-    private Boolean showSecondTable = false;
+    private Table ThirdOptionsTable = new Table();
+
+    private int showSecondTable = -1;
+    private int showThirdTable = -1;
 
     //Pokemons
-    public Pokemon currentPokemon = new Pokemon(3,100,"Venussaur",0,100);
-    public Pokemon currentEnemyPkm = new Pokemon(7,60,"Squirtle",0,100);
+    private PokedexController PDex = new PokedexController();
+    private TeamController team;
+    public Pokemon currentPokemon;
+    public Pokemon currentEnemyPkm;
 
     //Skins
     public Skin textSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Buttons/CustomUITextButton.json"));
     public BitmapFont font;//= textSkin.getFont("monogram");
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+
+    //Lógica (parte de Laura e etc)
+    private Batalha batalha;
+
+    //Soms e musica
+    private Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds/BattleBgm1.wav"));
+
+    public CombatStage(Main parent) {
+        this.parent = parent;
+        this.batch = parent.batch;
+    }
+
     //Create event happens when the class is created
     @Override
     public void create(){
-        //Inicializa um sprite batch (area de desenho de sprites)
-        batch = new SpriteBatch();
+
+        //Setup do time
+        Pokemon charizard = PDex.getPkm(6);
+        Pokemon venussaur = PDex.getPkm(3);
+        team = new TeamController(charizard);
+        team.AddToTeam(venussaur);
+        team.AddToTeam(PDex.getPkm(151));
+        team.AddToTeam(PDex.getPkm(150));
+        currentPokemon = team.getCurrentPokemon();
 
         //Configurações de Fonte
         generator = new FreeTypeFontGenerator(Gdx.files.internal("Ui/monogram.ttf"));
@@ -85,8 +114,6 @@ public class CombatStage extends ApplicationAdapter {
         viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),Camera);
 
         textSkin.setScale(24f);
-        //Skin
-        Skin skin = new Skin(Gdx.files.internal("Ui/buttonStyle.json"));
 
          // Modifica a escala da fonte(deixar maior ou menor)
         //Scenes management (where all the actors do their things
@@ -117,7 +144,8 @@ public class CombatStage extends ApplicationAdapter {
         button2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SwitchPokemon();
+                showThirdTable*=-1;
+                showSecondTable=-1;
             }
         });
         //Event listener to exit game when the button is pressed
@@ -127,7 +155,7 @@ public class CombatStage extends ApplicationAdapter {
                 Gdx.app.exit();
             }
         });
-        table.setPosition(670,0);
+        table.setPosition(680,0);
         textSkin.setScale(18);
         //Define a table para adicionar os botões na tela
         table.setSize(350,200);
@@ -141,11 +169,79 @@ public class CombatStage extends ApplicationAdapter {
         table.add(button4).width(150).height(75).pad(15);
 
 
+        //Configura a table de combate
+        SecondOptionsTable = new Table();
+        SecondOptionsTable.setSize(500,200);
+        SecondOptionsTable.center();
+        setupSecondOptionsTable();
+        stage.addActor(SecondOptionsTable);
+        //Configura a table de Trocar Pokemon
+        ThirdOptionsTable = new Table();
+        ThirdOptionsTable.setSize(500,200);
+        ThirdOptionsTable.center();
+        setupThirdOptionsTable();
+        stage.addActor(ThirdOptionsTable);
 
         //define stage como processador de inputs (para comandos futuros)
         Gdx.input.setInputProcessor(stage);
-    }
 
+        Generators gen = new Generators();
+        currentEnemyPkm = gen.GenPkm();
+
+        batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
+
+        //Musiquinha de fundo
+
+        long id = sound.play(1.0f);
+        sound.setLooping(id,true);
+
+
+
+    }
+    public void setupSecondOptionsTable(){
+        //Limpar os botões
+        SecondOptionsTable.clear();
+        //Preencher com novos botões
+        for(int i=0;i<4;i++){
+            if(i == 2){
+                SecondOptionsTable.row();
+            }
+            TextButton btn = new TextButton(currentPokemon.getMoves().get(i).name,textSkin);
+            SecondOptionsTable.add(btn).width(200).height(75).pad(30);
+
+            final int moveIndex = i;
+            btn.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    //currentPokemon.getMoves().get(moveIndex).atack(currentEnemyPkm);
+                    batalha.atacarOponente(moveIndex); //Utiliza a lógica de batalha para atacar o pokemon do adversário
+                    showSecondTable = -1;
+                }
+            });
+        }
+
+    }
+    public void setupThirdOptionsTable(){
+        //Limpar os botões
+        ThirdOptionsTable.clear();
+        //Preencher com novos botões
+        for(int i=0;i<team.getTeam().size();i++){
+            if(i == 2){
+                ThirdOptionsTable.row();
+            }
+            TextButton btn = new TextButton(team.getTeam().get(i).getName(),textSkin);
+            ThirdOptionsTable.add(btn).width(200).height(75).pad(30);
+
+            final int moveIndex = i;
+            btn.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    SwitchPokemon(moveIndex);
+                    showThirdTable = -1;
+                }
+            });
+        }
+    }
     @Override
     public void render(){
         input();
@@ -153,42 +249,69 @@ public class CombatStage extends ApplicationAdapter {
         draw();
     }
     public void turnTrue(){
-        this.currentEnemyPkm.Damage(10);
+        //this.currentEnemyPkm.Damage(10);
+        showSecondTable*=-1;
+        showThirdTable=-1;
+        Gdx.app.log("ShowSecondTable",""+showSecondTable);
     }
-    public void SwitchPokemon(){
-        switch (this.currentPokemon.getcIndex()){
-            case 6:currentPokemon = new Pokemon(3,100,"Venussaur",0,100);Gdx.app.log("Turning","Venussaur"); break;
-            case 3:currentPokemon = new Pokemon(6,150,"Charizard",0,100);Gdx.app.log("Turning","Charizard");  break;
-        }
+    public void SwitchPokemon(int i){
+        currentPokemon = team.getTeam().get(i);
+        batalha.trocarPokemon(currentPokemon);
+        Gdx.app.log("Turning",currentPokemon.getName());
+        setupSecondOptionsTable();
+
     }
     //where we will read players commands
     public void input(){
 
     }
     public void YourPokemonIsDead(){
-        SwitchPokemon();
+        currentPokemon = team.getNextPokemon();
+        setupSecondOptionsTable();
+        Gdx.app.log("Turning",currentPokemon.getName());
+        batalha.trocarPokemon(this.currentPokemon);
     }
     public void EnemyPokemonIsDead(){
         Gdx.app.log("Enemy Pokemon is dead (Switching to a new enemy","Enemy Pokemon is dead (Switching to a new enemy");
         //Use it to create a random pokemon later
         Generators gen = new Generators();
-        currentEnemyPkm = gen.GenPkm(true);
-        currentPokemon.setExp(currentPokemon.getExp()+10);
+        currentEnemyPkm = gen.GenPkm();
         Random rand = new Random();
-
+        batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
         int random = rand.nextInt(5)+1;
         ArenaTexture.dispose();
         ArenaTexture = new Texture("Ui/BattleCore/battle"+random+".png");
     }
     public void logic(){
         if(currentPokemon.getLife()<=0){
-            YourPokemonIsDead();
+            if (team.TheresAnyoneAlive()) {
+                YourPokemonIsDead();
+            } else {
+                Gdx.app.log("Batalha", "Todos os Pokémons desmaiaram! O jogador perdeu.");
+                parent.setScene(null);
+            }
         }
         if(currentEnemyPkm.getLife()<=0){
             EnemyPokemonIsDead();
         }
-    }
 
+        if(showSecondTable==1){
+            SecondOptionsTable.setPosition(100,0);
+        }else {
+            SecondOptionsTable.setPosition(50,11110);
+        }
+
+        if(showThirdTable==1){
+            ThirdOptionsTable.setPosition(100,0);
+        }else {
+            ThirdOptionsTable.setPosition(50,11110);
+        }
+
+        //refere-se a turno como entidade de animação
+        if(batalha.getTurno().equals("oponente") || batalha.getTurno().equals("player")){
+            showSecondTable = -1;
+        }
+    }
     public void drawHealthBar(){
         //é meio auto explicativo (desenha a barra de vida dos dois pokemons)
         // Essas variaveis definem o tamanho da barra de vida que é proporcional a vida
@@ -197,30 +320,53 @@ public class CombatStage extends ApplicationAdapter {
         Skin HealthBarSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Healthbar/Healthbar.json"));
         ProgressBar.ProgressBarStyle healthBarStyle = HealthBarSkin.get("default-horizontal", ProgressBar.ProgressBarStyle.class);
         // Barra de vida do jogador
-        ProgressBar playerHealthBar = new ProgressBar(0, 100, 1, false, healthBarStyle);
+        ProgressBar playerHealthBar = new ProgressBar(0, currentPokemon.getMaxLife(), 1, false, healthBarStyle);
         playerHealthBar.setValue(currentPokemon.getLife());
         playerHealthBar.setBounds(720, 200, 300, 30); // Posição e tamanho
         stage.addActor(playerHealthBar);
 
-        ProgressBar EnemyHealthBar = new ProgressBar(0, 100, 1, false, healthBarStyle);
+        ProgressBar EnemyHealthBar = new ProgressBar(0, currentEnemyPkm.getMaxLife(), 1, false, healthBarStyle);
         EnemyHealthBar.setValue(currentEnemyPkm.getLife());
         EnemyHealthBar.setBounds(50, 670, 300, 30); // Posição e tamanho
         stage.addActor(EnemyHealthBar);
     }
 
     public void draw(){
-
         // Clear the screen
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Draw the background using SpriteBatch
         Camera.update();
         batch.setProjectionMatrix(Camera.combined);
+
         //start draw zone
         batch.begin();
         batch.draw(ArenaTexture, 0, 0, Camera.viewportWidth, Camera.viewportHeight);
-        batch.draw(currentPokemon.getBackTexture(),100,0,300,300);
-        batch.draw(currentEnemyPkm.getFrontTexture(),600,300,300,300);
+
+        //draw pokemon sprites with animations and effects
+        int EsuplusX = 0; //move increase to enemy animation by animation
+        int EsuplusY = 0;
+        int PsuplusX = 0; //move increase to player animation
+        int PsuplusY = 0;
+        Random rand = new Random();
+        if(batalha.getTurno().equals("oponente")){
+            // batch.setColor(Color.RED);
+            EsuplusX = rand.nextInt(-30,30);
+        }else if(currentPokemon.getType() == TYPES.FLYING || currentPokemon.getType() == TYPES.BUG ){
+            EsuplusY = rand.nextInt(-2,2);
+        }
+        batch.draw(currentEnemyPkm.getFrontTexture(),600+EsuplusX,300+EsuplusY,300,300);
+        batch.setColor(Color.WHITE);
+        if(batalha.getTurno().equals("player")){
+            // batch.setColor(Color.RED);
+            PsuplusX = rand.nextInt(-30,30);
+        }else if(currentPokemon.getType() == TYPES.FLYING || currentPokemon.getType() == TYPES.BUG ){
+            PsuplusY = rand.nextInt(-2,2);
+        }
+        batch.draw(currentPokemon.getBackTexture(),100+PsuplusX,0+PsuplusY,300,300);
+        batch.setColor(Color.WHITE);
+
+
         //Nome do pokemon
         font.setColor(Color.BLACK);
         font.draw(batch,currentPokemon.getName(),720,250,2f,10,false);
@@ -239,11 +385,12 @@ public class CombatStage extends ApplicationAdapter {
     }
     @Override
     public void dispose(){
+        batch.dispose();
+        sound.dispose();
         generator.dispose();
         ArenaTexture.dispose();
         currentEnemyPkm.disposeTexture();
         currentPokemon.disposeTexture();
-        batch.dispose();
         stage.dispose();
     }
 

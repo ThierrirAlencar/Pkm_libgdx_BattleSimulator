@@ -4,6 +4,18 @@
 Este é um simulador de batalhas pokemon simples, para colocar em prática alguns dos conceitos principais da programação orientada a objetos assim como o funcionamento de diferentes tecnlogias do ambiente java. 
 </p>
 
+# Sumário
+
+1. [Screenshots](#screenshots-)
+2. [Dependencias](#dependencies-)
+3. [Running the Game](#running-the-game-)
+4. [Documentation](#documentation-)
+    - [Techs](#Techs-)
+    - [Folders](#Pastas-)
+    - [Classes and Packages](##Classes-e-Packages-)
+    - [Stages](#Stages)
+5. [Credits](#credits-)
+
 # Screenshots 📷
 <p align="center">
 <img width="300" src="assets/img1.png">
@@ -14,6 +26,7 @@ Este é um simulador de batalhas pokemon simples, para colocar em prática algun
 # Dependencies ⚙️
 
 LibGDX: https://libgdx.com
+- Box2D
 
 Java: https://www.java.com
 
@@ -63,6 +76,7 @@ em nossa implementação utilizamos um determinado padrão para criar stages [ve
 
 É dentro da stage que controlamos quais atores estarão presentes em cada momento, e tambem desenhamos na tela as implicações da interação visual entre o usuário e os nosso atores. Contruimos dentro de um stage a lógica, recebemos os comandos do usuário e desenhamos a resposta a tudo isso na tela.
 
+Uma stage pode extender classes abstratas ou interfaces nativas do LibGDX como AplicationAdapter ou Game. Em nosso jogo optei por utilizar a interface AplicationAdapter.
 ### Exemplos de stages
 
 1. [**ChooseTeamStage**](core/src/main/java/io/github/PokemonGame/Stages/ChooseTeamScene.java) - Stágio onde ocorre a seleção de um time para o jogador. Aqui introduzimos a lógica de seleção de times permitindo a interação do usuário com esse sistema e um feedback visual para estas interações. 
@@ -72,7 +86,20 @@ em nossa implementação utilizamos um determinado padrão para criar stages [ve
 
 ``create`` - método executado quando a stage é criada
 
-``render`` - método executado a cada frame do jogo
+``render`` - método executado a cada frame do jogo. Neste projeto você vera que o método render foi dividido para executar outros métodos.
+    
+- Por exemplo, o método render chama outros métodos para:
+    - draw (Desenhar na tela)
+        - Desenhar texturas
+        - Desenhar Textos
+        - Desenhar atores
+        - Desenhar interfaces Graficas
+    - logic ( Lógica de jogo)
+        - Controlar vida de personagens
+        - Checar eventos que estão acontecendo a todo instante
+    - Input ( Receber comandos do teclado do usuário)
+        - Mover o jogador
+        - Interagir com a interface
 
 ``dispose`` - método executado quando a stage é finalizada (utilizado para limpar mémoria e processamento)
 
@@ -108,10 +135,16 @@ Diferentemente de outras classes os atores podem ser vizualizados pelo jogador d
 
 
 # Credits 🤓
+Design e Interface - [Thierrir Alencar](https://github.com/ciringa)
 
+Lógica - [Laura de Matos](https://github.com/Lauramatos29)
+
+Documentação - [Marcelo Filho]()
+
+Banco de dados - [Isaque ]()
 
 
 **public assets** 
 - [Pkm BG By Zeo254](https://www.deviantart.com/zeo254/art/battle-background-GBA-597913776)
-- [Pkm BG2 - Pack By kWharever](www.deviantart.com/kwharever/art/Battle-Backgrounds-Outdated-FREE-TO-USE-766720249)
+- [Pkm BG2 - Pack By kWharever](https://www.deviantart.com/kwharever/art/Battle-Backgrounds-Outdated-FREE-TO-USE-766720249)
 - [Pokemon Images and many other sprites](https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/)

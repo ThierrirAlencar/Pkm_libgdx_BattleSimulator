@@ -13,21 +13,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import io.github.PokemonGame.Stages.ChooseTeamScene;
+import io.github.PokemonGame.Classes.PokedexController;
+import io.github.PokemonGame.Stages.ChooseTeamStage;
 import io.github.PokemonGame.Stages.CombatStage;
 import io.github.PokemonGame.Stages.WorldRenderStage;
-import io.github.PokemonGame.Stages.WorldStage;
 
 import static com.badlogic.gdx.Gdx.gl;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
+
     private ApplicationAdapter currentScene; // Cena ativa
     private Table table;
+
     //viewport
     private FitViewport viewport;
+
     //stage
     public Stage stage;
+
     //Camera
     public OrthographicCamera Camera;
     public SpriteBatch batch;
@@ -35,8 +39,10 @@ public class Main extends ApplicationAdapter {
     //textures
     public Texture BgTexture;
 
+
     @Override
     public void create() {
+
         batch = new SpriteBatch();
         Camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         Camera.position.set(0, 0, -1); // Set camera position
@@ -62,24 +68,25 @@ public class Main extends ApplicationAdapter {
         btn1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setScene(new CombatStage());
+                setScene(new CombatStage(Main.this));
                 Gdx.app.log("Scene changed","Changed Scene because button one called");
             }
         });
         btn2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setScene(new WorldRenderStage());
                 Gdx.app.log("Scene changed","Changed Scene because button two called");
+                setScene(new WorldRenderStage(Main.this,batch));
             }
         });
         btn3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                setScene(new ChooseTeamScene());
+                setScene(new ChooseTeamStage(Main.this));
                 Gdx.app.log("Scene changed","Changed Scene because button three called");
             }
         });
+
         //define stage como processador de inputs (para comandos futuros)
         Gdx.input.setInputProcessor(stage);
     }
@@ -115,19 +122,21 @@ public class Main extends ApplicationAdapter {
 
     // Método para alternar entre cenas
     public void setScene(ApplicationAdapter newScene) {
-        Gdx.input.setInputProcessor(null); //Limpa o processador de inputs para que um novo possa ser chamado na cena
+        Gdx.input.setInputProcessor(null); // Limpa os inputs antes de mudar de cena
+
         if (currentScene != null) {
             currentScene.dispose(); // Libera recursos da cena anterior
         }
-        if(newScene != null){
-            Gdx.app.log("Changes Scene",newScene.toString());
+
+        if (newScene != null) {
+            Gdx.app.log("Changes Scene", newScene.toString());
             currentScene = newScene;
-        }else {
-            this.create();
+        } else {
+            this.create(); // Se a cena for nula, recria a cena inicial
         }
 
         if (currentScene != null) {
-            currentScene.create(); // Inicializa a nova cena
+            currentScene.create(); // Inicializa a nova cena corretamente
         }
     }
     @Override

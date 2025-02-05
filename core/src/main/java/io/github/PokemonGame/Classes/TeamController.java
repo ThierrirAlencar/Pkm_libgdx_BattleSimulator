@@ -8,15 +8,37 @@ import java.util.ArrayList;
 public class TeamController {
     private ArrayList<Pokemon> team = new ArrayList<Pokemon>();
     private Pokemon CurrentPokemon;
-    public TeamController() {
-        CurrentPokemon = null;
+    public TeamController(Pokemon firstPokemon) {
+        CurrentPokemon = firstPokemon;
         for(int i = 0; i<team.size();i++){
-            team.add(null);
+            team.add(firstPokemon);
         }
     }
-    public void SwitchCurrentPokemon(int Index){}
+
+    public ArrayList<Pokemon> getTeam() {
+        return team;
+    }
+
     public Pokemon getCurrentPokemon(){
         return CurrentPokemon;
+    }
+    public Pokemon getNextPokemon(){
+        for(int i=0; i<team.size();i++){
+            if(team.get(i).getLife()>0){
+                return team.get(i);
+            }
+        }
+
+        return team.get(0);
+    }
+    public boolean TheresAnyoneAlive(){
+        for(int i=0; i<team.size();i++){
+            if(team.get(i).getLife()>0){
+                return true;
+            }
+        }
+
+        return  false;
     }
     public void SetCurrentPokemon(int Index) throws TheresNoSelectedPokemon{
         if(team.get(Index) !=null && team.get(Index) != CurrentPokemon){
@@ -26,11 +48,6 @@ public class TeamController {
         }
     }
     public void AddToTeam(Pokemon pokemon){
-        for (int i =0; i<team.size();i++){
-            if(team.get(i) == null){
-                team.set(i,pokemon);
-                i = team.size()+1;
-            }
-        }
+        team.add(pokemon);
     }
 }
