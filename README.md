@@ -21,6 +21,7 @@ Este é um simulador de batalhas pokemon simples, para colocar em prática algun
 <img width="300" src="assets/img1.png">
 <img width="300" src="assets/img.png">
 <img width="300" src="assets/img2.png">
+<img width="300" src="assets/img3.png">
 </p>
 
 # Dependencies ⚙️
@@ -30,9 +31,15 @@ LibGDX: https://libgdx.com
 
 Java: https://www.java.com
 
+SQLite: https://www.sqlite.org
+
 # Running the game 🚀
 
-.\gradlew.bat run
+    .\gradlew.bat run
+
+Ou execute o arquivo 
+
+    run.bat
 
 # Documentation 📰
 

@@ -1,9 +1,12 @@
 package io.github.PokemonGame.Classes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Types.EFFECTS;
 import io.github.PokemonGame.Types.TYPES;
+
+import java.util.logging.FileHandler;
 
 public class move extends TypeMove{
     public int id;
@@ -19,7 +22,17 @@ public class move extends TypeMove{
     }
     public void atack(Pokemon TargetPokemon){
         float damage;
-        SoundEffect snd = new SoundEffect("Sounds/SFX/"+type+".mp3");
+        SoundEffect snd;
+        FileHandle f = Gdx.files.internal("Sounds/Attacks/" + name + ".mp3");
+
+        // Verifica se o arquivo existe antes de criar o SoundEffect
+        if (f.exists()) {
+            snd = new SoundEffect("Sounds/Attacks/" + name + ".mp3");
+        } else {
+            Gdx.app.log("Sound Warning", "Arquivo de som não encontrado: " + name + ".mp3. Usando som padrão: " + type);
+            snd = new SoundEffect("Sounds/SFX/" + type + ".mp3");
+        }
+
         snd.playSound(1.2f);
 
         switch (this.type) {

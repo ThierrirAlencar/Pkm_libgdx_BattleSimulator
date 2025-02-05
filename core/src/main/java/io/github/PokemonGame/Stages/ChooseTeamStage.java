@@ -12,7 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Classes.PokedexController;
+import io.github.PokemonGame.Classes.TeamController;
 import io.github.PokemonGame.Main;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 public class ChooseTeamStage extends ApplicationAdapter {
@@ -23,8 +27,8 @@ public class ChooseTeamStage extends ApplicationAdapter {
     private Texture BackgroundTexture = new Texture("Ui/PkmChooseMenu/PokemonChooseBg.png");
 
     //Actors and Classes
-    private PokedexController dexClass = new PokedexController();
-
+    private PokedexController dexClass;
+    private TeamController team;
     //Skins
     public Skin textSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Buttons/CustomUITextButton.json"));
     public BitmapFont font; //Font Texture
@@ -38,6 +42,8 @@ public class ChooseTeamStage extends ApplicationAdapter {
     public ChooseTeamStage(Main parent){
         this.parent = parent;
         this.batch = parent.batch;
+        this.dexClass = parent.pokedex;
+        this.team = parent.team;
     }
     @Override
     public void create() {
@@ -68,8 +74,16 @@ public class ChooseTeamStage extends ApplicationAdapter {
             Gdx.app.log("Update Index", "- " + dexClass.getIndex());
         };
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
-            this.parent.setScene(new WorldRenderStage(parent,parent.batch));
+            if(team.getTeam().size()>0){
+                this.parent.setScene(new WorldRenderStage(parent,parent.batch));
+            }
         }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            Pokemon p = dexClass.getPkm(dexClass.index+1);
+            team.AddToTeam(p);
+            Gdx.app.log("Pokemon Added to Team", "- " + p.getName());
+        };
     }
     public void draw(){
         batch.begin();
@@ -93,8 +107,41 @@ public class ChooseTeamStage extends ApplicationAdapter {
             font.setColor(1,1,1,1);
 
         }
-        font.draw(batch,"Use Arrow Keys to move and space to select",400,80,5,1,false);
+        drawSelectedTeam();
+        font.draw(batch,"Use Arrow Keys to move and space to select and enter to submit",400,80,3,1,false);
         batch.end();
+    }
+
+    public void drawSelectedTeam(){
+        for (int i = 0; i<this.team.getTeam().size();i++){
+            Pokemon p = this.team.getTeam().get(i);
+            int x = 300;
+            int y = 300+(i*80);
+
+            switch (i){
+                case 0:
+                    x = 520;
+                    y = 510; break;
+                case 1:
+                    x = 520;
+                    y = 365; break;
+                case 2:
+                    x = 520;
+                    y = 235; break;
+                case 3:
+                    x = 775;
+                    y = 530; break;
+                case 4:
+                    x = 775;
+                    y = 400; break;
+                case 5:
+                    x = 775;
+                    y = 250; break;
+            }
+
+            batch.draw(p.getFrontTexture(),x,y,100,100);
+            font.draw(batch,p.getName(),x+50,y+0,2,1,false);
+        }
     }
     @Override
     public void dispose() {

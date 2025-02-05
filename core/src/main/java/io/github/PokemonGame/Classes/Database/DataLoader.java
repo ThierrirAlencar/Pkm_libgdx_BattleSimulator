@@ -50,10 +50,8 @@ public class DataLoader {
                         if(filteredMoves.size()>i){ //Se o indice for maior que os ataques filtrados quer dizer que nao existem ataques suficientes
                             //sendo assim iremos puxar um ataque alatório
                             finalMoves.add(filteredMoves.get(rand.nextInt(filteredMoves.size())));
-                            filteredMoves.remove(i);
                         }else {
                             finalMoves.add(moveList.get(rand.nextInt(moveList.size())));
-                            moveList.remove(i);
                         }
 
                     }
