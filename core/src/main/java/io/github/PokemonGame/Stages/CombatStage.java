@@ -35,6 +35,8 @@ public class CombatStage extends ApplicationAdapter {
 
     //Isso é uma textura(basicamente um sprite)
     public Texture ArenaTexture; // Textura da arena
+    public Texture playerTypeTexture;
+    public Texture enemyTypeTexture;
 
     //Area de desenho de texturas
     public SpriteBatch batch;
@@ -190,8 +192,8 @@ public class CombatStage extends ApplicationAdapter {
         long id = sound.play(1.0f);
         sound.setLooping(id,true);
 
-
-
+        enemyTypeTexture = new Texture("Ui/icons/"+currentEnemyPkm.getType()+".png");
+        playerTypeTexture = new Texture("Ui/icons/"+currentPokemon.getType()+".png");
     }
     public void setupSecondOptionsTable(){
         //Limpar os botões
@@ -254,6 +256,7 @@ public class CombatStage extends ApplicationAdapter {
         batalha.trocarPokemon(currentPokemon);
         Gdx.app.log("Turning",currentPokemon.getName());
         setupSecondOptionsTable();
+        playerTypeTexture = new Texture("Ui/icons/"+currentPokemon.getType()+".png");
 
     }
     //where we will read players commands
@@ -264,6 +267,7 @@ public class CombatStage extends ApplicationAdapter {
         currentPokemon = team.getNextPokemon();
         setupSecondOptionsTable();
         Gdx.app.log("Turning",currentPokemon.getName());
+        playerTypeTexture = new Texture("Ui/icons/"+currentPokemon.getType()+".png");
         batalha.trocarPokemon(this.currentPokemon);
     }
     public void EnemyPokemonIsDead(){
@@ -272,6 +276,7 @@ public class CombatStage extends ApplicationAdapter {
         Generators gen = new Generators();
         currentEnemyPkm = gen.GenPkm();
         Random rand = new Random();
+        enemyTypeTexture = new Texture("Ui/icons/"+currentEnemyPkm.getType()+".png");
         batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
         int random = rand.nextInt(5)+1;
         ArenaTexture.dispose();
@@ -364,8 +369,15 @@ public class CombatStage extends ApplicationAdapter {
 
         //Nome do pokemon
         font.setColor(Color.BLACK);
+
+
+        batch.draw(playerTypeTexture, 940,225,30,30);
+        batch.draw(enemyTypeTexture, 280,690,30,30);
         font.draw(batch,currentPokemon.getName(),720,250,2f,10,false);
         font.draw(batch,currentEnemyPkm.getName(),50, 720,2f,10,false);
+
+
+
         //end draw zone
         batch.end();
 
@@ -387,6 +399,8 @@ public class CombatStage extends ApplicationAdapter {
         currentEnemyPkm.disposeTexture();
         currentPokemon.disposeTexture();
         stage.dispose();
+        enemyTypeTexture.dispose();
+        playerTypeTexture.dispose();
     }
 
     @Override

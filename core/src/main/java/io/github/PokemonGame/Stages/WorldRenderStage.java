@@ -3,11 +3,14 @@ package io.github.PokemonGame.Stages;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -17,6 +20,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.github.PokemonGame.Actors.GymChief;
 import io.github.PokemonGame.Actors.Player;
@@ -57,6 +61,12 @@ public class WorldRenderStage extends ApplicationAdapter {
 
     private Main parent;
 
+
+    //Font
+    public Skin textSkin = new Skin(Gdx.files.internal("Ui/BattleCore/Buttons/CustomUITextButton.json"));
+    public BitmapFont font;//= textSkin.getFont("monogram");
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     public WorldRenderStage(Main parent, SpriteBatch batch) {
         this.parent = parent;
         this.batch = batch;
@@ -65,6 +75,12 @@ public class WorldRenderStage extends ApplicationAdapter {
     @Override
     public void create() {
         Gdx.app.log("Stage called", "render world demonstration");
+
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("Ui/monogram.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.color = Color.BLACK;
+        parameter.size = 60;
+        font = generator.generateFont(parameter);
 
         //Calculos muito fodas ae
         float viewportWidth = TILE_SIZE * VISIBLE_TILES_X;
@@ -165,7 +181,7 @@ public class WorldRenderStage extends ApplicationAdapter {
         //Desenhar ator (captão)
         batch.draw(captain.currentTexture,captain.x,captain.y);
 
-
+        font.draw(batch,"Captain : Press space to battle with me for eternity",captain.x-200, captain.y+100);
         //Desenhar jogador nas posições do body no mapa
         Vector2 playerPosition = player.getPlayerBody().getPosition();
         if(player.isRunning){

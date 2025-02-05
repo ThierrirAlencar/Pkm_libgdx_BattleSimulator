@@ -21,6 +21,7 @@ Este é um simulador de batalhas pokemon simples, para colocar em prática algun
 <img width="300" src="assets/img1.png">
 <img width="300" src="assets/img.png">
 <img width="300" src="assets/img2.png">
+<img width="300" src="assets/img3.png">
 </p>
 
 # Dependencies ⚙️

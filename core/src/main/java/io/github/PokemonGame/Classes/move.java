@@ -30,7 +30,7 @@ public class move extends TypeMove{
             snd = new SoundEffect("Sounds/Attacks/" + name + ".mp3");
         } else {
             Gdx.app.log("Sound Warning", "Arquivo de som não encontrado: " + name + ".mp3. Usando som padrão: " + type);
-            snd = new SoundEffect("Sounds/SFX/" + name + ".mp3");
+            snd = new SoundEffect("Sounds/SFX/" + type + ".mp3");
         }
 
         snd.playSound(1.2f);
