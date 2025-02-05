@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import io.github.PokemonGame.Classes.PokedexController;
+import io.github.PokemonGame.Classes.TeamController;
 import io.github.PokemonGame.Stages.ChooseTeamStage;
 import io.github.PokemonGame.Stages.CombatStage;
 import io.github.PokemonGame.Stages.WorldRenderStage;
@@ -32,6 +33,10 @@ public class Main extends ApplicationAdapter {
     //stage
     public Stage stage;
 
+    //Carry Components
+    public TeamController team;
+    public PokedexController pokedex;
+
     //Camera
     public OrthographicCamera Camera;
     public SpriteBatch batch;
@@ -42,7 +47,8 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
-
+        team = new TeamController();
+        pokedex = new PokedexController();
         batch = new SpriteBatch();
         Camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         Camera.position.set(0, 0, -1); // Set camera position
@@ -55,30 +61,12 @@ public class Main extends ApplicationAdapter {
         Table table = new Table();
 
         BgTexture = new Texture(Gdx.files.internal("banner.png"));
-        TextButton btn1 = new TextButton("Demo de luta",textSkin);
-        TextButton btn2 = new TextButton("Demo de Andar",textSkin);
-        TextButton btn3 = new TextButton("Demo de Banco de dados",textSkin);
+        TextButton btn3 = new TextButton("Iniciar",textSkin);
 
         stage.addActor(table);
         table.setPosition(Gdx.graphics.getWidth()/2,(Gdx.graphics.getHeight()/2)-64);
-        table.add(btn1).width(150).height(75).pad(15);table.row();
-        table.add(btn2).width(150).height(75).pad(15);table.row();
-        table.add(btn3).width(150).height(75).pad(15);table.row();
+        table.add(btn3).width(200).height(75).pad(15);table.row();
 
-        btn1.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                setScene(new CombatStage(Main.this));
-                Gdx.app.log("Scene changed","Changed Scene because button one called");
-            }
-        });
-        btn2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("Scene changed","Changed Scene because button two called");
-                setScene(new WorldRenderStage(Main.this,batch));
-            }
-        });
         btn3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -89,6 +77,9 @@ public class Main extends ApplicationAdapter {
 
         //define stage como processador de inputs (para comandos futuros)
         Gdx.input.setInputProcessor(stage);
+
+        team = new TeamController();
+        pokedex = new PokedexController();
     }
 
     @Override

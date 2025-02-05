@@ -58,7 +58,7 @@ public class CombatStage extends ApplicationAdapter {
     private int showThirdTable = -1;
 
     //Pokemons
-    private PokedexController PDex = new PokedexController();
+    private PokedexController PDex;
     private TeamController team;
     public Pokemon currentPokemon;
     public Pokemon currentEnemyPkm;
@@ -78,19 +78,14 @@ public class CombatStage extends ApplicationAdapter {
     public CombatStage(Main parent) {
         this.parent = parent;
         this.batch = parent.batch;
+        this.PDex = parent.pokedex;
+        this.team = parent.team;
     }
 
     //Create event happens when the class is created
     @Override
     public void create(){
 
-        //Setup do time
-        Pokemon charizard = PDex.getPkm(6);
-        Pokemon venussaur = PDex.getPkm(3);
-        team = new TeamController(charizard);
-        team.AddToTeam(venussaur);
-        team.AddToTeam(PDex.getPkm(151));
-        team.AddToTeam(PDex.getPkm(150));
         currentPokemon = team.getCurrentPokemon();
 
         //Configurações de Fonte
@@ -226,11 +221,11 @@ public class CombatStage extends ApplicationAdapter {
         ThirdOptionsTable.clear();
         //Preencher com novos botões
         for(int i=0;i<team.getTeam().size();i++){
-            if(i == 2){
+            if(i % 3 == 0){
                 ThirdOptionsTable.row();
             }
             TextButton btn = new TextButton(team.getTeam().get(i).getName(),textSkin);
-            ThirdOptionsTable.add(btn).width(200).height(75).pad(30);
+            ThirdOptionsTable.add(btn).width(150).height(65).pad(30);
 
             final int moveIndex = i;
             btn.addListener(new ChangeListener() {

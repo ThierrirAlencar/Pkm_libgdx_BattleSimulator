@@ -8,12 +8,6 @@ import java.util.ArrayList;
 public class TeamController {
     private ArrayList<Pokemon> team = new ArrayList<Pokemon>();
     private Pokemon CurrentPokemon;
-    public TeamController(Pokemon firstPokemon) {
-        CurrentPokemon = firstPokemon;
-        for(int i = 0; i<team.size();i++){
-            team.add(firstPokemon);
-        }
-    }
 
     public ArrayList<Pokemon> getTeam() {
         return team;
@@ -48,6 +42,9 @@ public class TeamController {
         }
     }
     public void AddToTeam(Pokemon pokemon){
-        team.add(pokemon);
+        if(team.size()<6){ //Pode-se ter no máximo 6 pokemons
+            team.add(pokemon);
+            CurrentPokemon = pokemon;
+        }
     }
 }

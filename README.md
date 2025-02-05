@@ -30,9 +30,15 @@ LibGDX: https://libgdx.com
 
 Java: https://www.java.com
 
+SQLite: https://www.sqlite.org
+
 # Running the game 🚀
 
-.\gradlew.bat run
+    .\gradlew.bat run
+
+Ou execute o arquivo 
+
+    run.bat
 
 # Documentation 📰
 

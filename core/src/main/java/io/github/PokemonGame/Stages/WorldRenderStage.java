@@ -94,7 +94,7 @@ public class WorldRenderStage extends ApplicationAdapter {
 
         //Atores do estágio
         player = new Player(new Texture("player/playerFront.png"),12*TILE_SIZE,30*TILE_SIZE,world);
-        captain = new GymChief(912,631);
+        captain = new GymChief(880,431);
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -160,15 +160,21 @@ public class WorldRenderStage extends ApplicationAdapter {
 
         tmxRender.render();
 
+
         batch.begin();
+        //Desenhar ator (captão)
+        batch.draw(captain.currentTexture,captain.x,captain.y);
+
+
+        //Desenhar jogador nas posições do body no mapa
         Vector2 playerPosition = player.getPlayerBody().getPosition();
         if(player.isRunning){
             batch.draw((TextureRegion) player.currentAnimation.getKeyFrame(elapsedTime, true),
                 playerPosition.x, playerPosition.y);
         }else {
-        batch.draw(player.currentTexture,playerPosition.x, playerPosition.y);
+            batch.draw(player.currentTexture,playerPosition.x, playerPosition.y);
         }
-            batch.draw(captain.currentTexture,captain.x,captain.y);
+
         batch.end();
     }
 
@@ -210,10 +216,6 @@ public void input(){
 
         if (tmxRender != null) {
             tmxRender.dispose();
-        }
-
-        if (batch != null) {
-            batch.dispose();
         }
 
         if (debugRenderer != null) {
