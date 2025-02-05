@@ -1,5 +1,4 @@
-package io.github.PokemonGame.interfaces;
-import io.github.PokemonGame.Types.TYPES;
+package io.github.PokemonGame.Classes;
 import io.github.PokemonGame.Types.TYPES;
 
 // Carrega todos os métodos relativos às lógicas de tipagem de um ataque
@@ -48,7 +47,7 @@ public class TypeMove {
     }
 
     public int eletric(TYPES defenderType, int basedamage) {
-        if (defenderType == TYPES.ELETRIC || defenderType == TYPES.GRASS || defenderType == TYPES.DRAGON) {
+        if (defenderType == TYPES.ELECTRIC || defenderType == TYPES.GRASS || defenderType == TYPES.DRAGON) {
             basedamage = basedamage / 2;
         }
         if (defenderType == TYPES.WATER || defenderType == TYPES.FLYING) {
@@ -100,7 +99,7 @@ public class TypeMove {
         if (defenderType == TYPES.GRASS || defenderType == TYPES.BUG) {
             basedamage = basedamage / 2;
         }
-        if (defenderType == TYPES.FIRE || defenderType == TYPES.ELETRIC || defenderType == TYPES.POISON || defenderType == TYPES.ROCK || defenderType == TYPES.STEEL) {
+        if (defenderType == TYPES.FIRE || defenderType == TYPES.ELECTRIC || defenderType == TYPES.POISON || defenderType == TYPES.ROCK || defenderType == TYPES.STEEL) {
             basedamage = basedamage * 2;
         }
         if (defenderType == TYPES.FLYING) {
@@ -110,7 +109,7 @@ public class TypeMove {
     }
 
     public int flying(TYPES defenderType, int basedamage) {
-        if (defenderType == TYPES.ELETRIC || defenderType == TYPES.ROCK || defenderType == TYPES.STEEL) {
+        if (defenderType == TYPES.ELECTRIC || defenderType == TYPES.ROCK || defenderType == TYPES.STEEL) {
             basedamage = basedamage / 2;
         }
         if (defenderType == TYPES.GRASS || defenderType == TYPES.FIGHTING || defenderType == TYPES.BUG) {
@@ -179,7 +178,7 @@ public class TypeMove {
     }
 
     public int steel(TYPES defenderType, int basedamage) {
-        if (defenderType == TYPES.FIRE || defenderType == TYPES.WATER || defenderType == TYPES.ELETRIC || defenderType == TYPES.STEEL) {
+        if (defenderType == TYPES.FIRE || defenderType == TYPES.WATER || defenderType == TYPES.ELECTRIC || defenderType == TYPES.STEEL) {
             basedamage = basedamage / 2;
         }
         if (defenderType == TYPES.ICE || defenderType == TYPES.ROCK || defenderType == TYPES.FAIRY) {

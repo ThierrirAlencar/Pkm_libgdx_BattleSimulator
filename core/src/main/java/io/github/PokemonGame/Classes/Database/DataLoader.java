@@ -1,9 +1,10 @@
 package io.github.PokemonGame.Classes.Database;
 
 
+import com.badlogic.gdx.Gdx;
 import io.github.PokemonGame.Actors.Pokemon;
-import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Types.TYPES;
+import io.github.PokemonGame.Classes.move;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DataLoader {
 	public static ArrayList<Pokemon> loadPokemons(Connection conn) throws SQLException {
@@ -22,6 +24,8 @@ public class DataLoader {
             "JOIN tipos t ON tp.tipo1 = t.id;";
         // Aqui eu estou substituindo os valores de placeholders pelo nome das colunas do banco de dados""
 
+        int pkmLimit = 151; //limite de pokemons adicionados
+        int index = 1;
 	    try (PreparedStatement pstmt = conn.prepareStatement(query); ResultSet rs = pstmt.executeQuery()) {
 
 	        while (rs.next()) {
@@ -30,12 +34,38 @@ public class DataLoader {
 	            int vida = rs.getInt("vida");
 	            String nomeTipo = rs.getString("nome_tipo"); // Obtendo o nome do tipo
 
+
                 TYPES tipoEnum = TYPES.valueOf(nomeTipo.toUpperCase());
 
-                // Alterado para passar o nome do tipo ao construtor
-                Generators gen = new Generators();
-	            Pokemon pokemon = new Pokemon(id,tipoEnum,nome,0,vida,gen.genMoveList(tipoEnum));
-	            pokemons.add(pokemon);
+                if(index<=pkmLimit){
+                    // Alterado para passar o nome do tipo ao construtor
+
+                    List<move> moveList = loadAtaques(conn); // Carrega lista de ataques
+                    //filtrar lista de moves para retornar apenas alguns em especifico
+                    List<move> filteredMoves = filtrar(moveList,tipoEnum);
+
+                    Random rand = new Random();
+                    ArrayList<move> finalMoves = new ArrayList<>();
+                    for(int i = 0;i<4;i++){
+                        if(filteredMoves.size()>i){ //Se o indice for maior que os ataques filtrados quer dizer que nao existem ataques suficientes
+                            //sendo assim iremos puxar um ataque alatório
+                            finalMoves.add(filteredMoves.get(rand.nextInt(filteredMoves.size())));
+                            filteredMoves.remove(i);
+                        }else {
+                            finalMoves.add(moveList.get(rand.nextInt(moveList.size())));
+                            moveList.remove(i);
+                        }
+
+                    }
+
+
+                    Pokemon pokemon = new Pokemon(id,tipoEnum,nome,0,vida*2,finalMoves);
+
+                    Gdx.app.log("Pokemon loaded",pokemon.getName());
+                    pokemons.add(pokemon);
+                }
+                index++;
+
 	        }
 	    }
 	    return pokemons; //Lista que será retornada com todos os pokemons
@@ -43,8 +73,8 @@ public class DataLoader {
 
 
     //Carrega uma lista de todos os tipos
-	public static List<Ataque> loadAtaques(Connection conn) throws SQLException {
-	    List<Ataque> ataques = new ArrayList<>();
+	public static List<move> loadAtaques(Connection conn) throws SQLException {
+	    List<move> ataques = new ArrayList<move>();
         String query = "SELECT a.id, a.nome, a.dano, a.effect, t.tipo AS nome_tipo " +
             "FROM ataque a " +
             "JOIN tipos t ON a.tipo = t.id;";
@@ -58,19 +88,22 @@ public class DataLoader {
 	            String effect = rs.getString("effect");
 	            String nomeTipo = rs.getString("nome_tipo"); // Obtém o nome do tipo
 
+                TYPES tipoEnum = TYPES.valueOf(nomeTipo.toUpperCase());
+
 	            // Alterado para passar o nome do tipo ao construtor
-	            Ataque ataque = new Ataque(id, nome, dano, effect, nomeTipo);
-	            ataques.add(ataque);
-	        }
+                move ataque = new move(dano,tipoEnum,nome,id);
+                //Gdx.app.log("Loaded move",ataque.baseDamage + " - " + ataque.name);
+                ataques.add(ataque);
+            }
 	    }
 	    return ataques;
 	}
 
     //Retorna apenas ataques de um tipo em especifico
-	public static List<Ataque> filtrar(List<Ataque> ataques, String tipo) {
-	    List<Ataque> ataquesFiltrados = new ArrayList<>();
-	    for (Ataque ataque : ataques) {
-	        if (ataque.getTipo().equalsIgnoreCase(tipo)) { // Compara ignorando maiúsculas/minúsculas
+	public static List<move> filtrar(List<move> ataques, TYPES tipo) {
+	    List<move> ataquesFiltrados = new ArrayList<>();
+	    for (move ataque : ataques) {
+	        if (ataque.type == tipo) { // Compara ignorando maiúsculas/minúsculas
 	            ataquesFiltrados.add(ataque);
 	        }
 	    }

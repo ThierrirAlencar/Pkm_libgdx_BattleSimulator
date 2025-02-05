@@ -72,6 +72,9 @@ subprojects {
     implementation "com.badlogicgames.gdx:gdx:1.12.1"
     implementation "com.badlogicgames.gdx:gdx-box2d:1.12.1"
 
+    // SQLite JDBC (added)
+    implementation 'org.xerial:sqlite-jdbc:3.47.2.0'
+
     // Add native dependencies for specific platforms
     runtimeOnly "com.badlogicgames.gdx:gdx-platform:1.12.1:natives-desktop"
     runtimeOnly "com.badlogicgames.gdx:gdx-box2d-platform:1.12.1:natives-desktop"

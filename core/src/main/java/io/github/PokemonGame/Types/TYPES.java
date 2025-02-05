@@ -5,7 +5,7 @@ public enum TYPES {
     FIRE,
     WATER,
     GRASS,
-    ELETRIC,
+    ELECTRIC,
     ICE,
     FIGHTING,
     POISON,

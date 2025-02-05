@@ -1,4 +1,4 @@
-package io.github.PokemonGame.interfaces;
+package io.github.PokemonGame.Classes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;

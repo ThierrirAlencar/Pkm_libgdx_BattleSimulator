@@ -2,7 +2,6 @@ package io.github.PokemonGame.Classes;
 
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Types.TYPES;
-import io.github.PokemonGame.interfaces.move;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -10,7 +9,7 @@ import java.util.Random;
 public class Generators {
 
     //Carrega um pokemon aleatório de uma lista carregada da classe dex
-    public Pokemon GenPkm(Boolean Oposit){
+    public Pokemon GenPkm(){
         //Gera um pokemon aleatorio
         PokedexController pDex = new PokedexController();
         ArrayList<Pokemon> Dex = pDex.getDex();
@@ -26,7 +25,7 @@ public class Generators {
         ArrayList<move> list = new ArrayList<>(4);
         Random rand = new Random();
         for(int i = 0; i<4; i++){
-            list.add(new move(rand.nextInt(20),pkmType,pkmType +"-"+ rand.nextInt(100)));
+            list.add(new move(rand.nextInt(20),pkmType,pkmType +"-"+ rand.nextInt(100),1));
         }
         return list;
     }

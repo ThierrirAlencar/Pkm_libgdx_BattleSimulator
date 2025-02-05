@@ -21,12 +21,18 @@ import io.github.PokemonGame.Classes.Generators;
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Classes.PokedexController;
 import io.github.PokemonGame.Classes.TeamController;
+import io.github.PokemonGame.Main;
+import io.github.PokemonGame.Types.TYPES;
 
 import java.util.Random;
 
 import static com.badlogic.gdx.Gdx.gl;
 
 public class CombatStage extends ApplicationAdapter {
+    //Classe pai
+    private Main parent;
+
+
     //Isso é uma textura(basicamente um sprite)
     public Texture ArenaTexture; // Textura da arena
 
@@ -69,17 +75,22 @@ public class CombatStage extends ApplicationAdapter {
     //Soms e musica
     private Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sounds/BattleBgm1.wav"));
 
+    public CombatStage(Main parent) {
+        this.parent = parent;
+        this.batch = parent.batch;
+    }
+
     //Create event happens when the class is created
     @Override
     public void create(){
-        //Inicializa um sprite batch (area de desenho de sprites)
-        batch = new SpriteBatch();
 
         //Setup do time
         Pokemon charizard = PDex.getPkm(6);
         Pokemon venussaur = PDex.getPkm(3);
         team = new TeamController(charizard);
         team.AddToTeam(venussaur);
+        team.AddToTeam(PDex.getPkm(151));
+        team.AddToTeam(PDex.getPkm(150));
         currentPokemon = team.getCurrentPokemon();
 
         //Configurações de Fonte
@@ -103,9 +114,6 @@ public class CombatStage extends ApplicationAdapter {
         viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),Camera);
 
         textSkin.setScale(24f);
-
-        //Skin
-        Skin skin = new Skin(Gdx.files.internal("Ui/buttonStyle.json"));
 
          // Modifica a escala da fonte(deixar maior ou menor)
         //Scenes management (where all the actors do their things
@@ -137,6 +145,7 @@ public class CombatStage extends ApplicationAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 showThirdTable*=-1;
+                showSecondTable=-1;
             }
         });
         //Event listener to exit game when the button is pressed
@@ -177,7 +186,7 @@ public class CombatStage extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
 
         Generators gen = new Generators();
-        currentEnemyPkm = gen.GenPkm(true);
+        currentEnemyPkm = gen.GenPkm();
 
         batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
 
@@ -242,12 +251,14 @@ public class CombatStage extends ApplicationAdapter {
     public void turnTrue(){
         //this.currentEnemyPkm.Damage(10);
         showSecondTable*=-1;
+        showThirdTable=-1;
         Gdx.app.log("ShowSecondTable",""+showSecondTable);
     }
     public void SwitchPokemon(int i){
         currentPokemon = team.getTeam().get(i);
         batalha.trocarPokemon(currentPokemon);
         Gdx.app.log("Turning",currentPokemon.getName());
+        setupSecondOptionsTable();
 
     }
     //where we will read players commands
@@ -256,6 +267,7 @@ public class CombatStage extends ApplicationAdapter {
     }
     public void YourPokemonIsDead(){
         currentPokemon = team.getNextPokemon();
+        setupSecondOptionsTable();
         Gdx.app.log("Turning",currentPokemon.getName());
         batalha.trocarPokemon(this.currentPokemon);
     }
@@ -263,7 +275,7 @@ public class CombatStage extends ApplicationAdapter {
         Gdx.app.log("Enemy Pokemon is dead (Switching to a new enemy","Enemy Pokemon is dead (Switching to a new enemy");
         //Use it to create a random pokemon later
         Generators gen = new Generators();
-        currentEnemyPkm = gen.GenPkm(true);
+        currentEnemyPkm = gen.GenPkm();
         Random rand = new Random();
         batalha = new Batalha(this.currentEnemyPkm,this.currentPokemon);
         int random = rand.nextInt(5)+1;
@@ -272,7 +284,12 @@ public class CombatStage extends ApplicationAdapter {
     }
     public void logic(){
         if(currentPokemon.getLife()<=0){
-            YourPokemonIsDead();
+            if (team.TheresAnyoneAlive()) {
+                YourPokemonIsDead();
+            } else {
+                Gdx.app.log("Batalha", "Todos os Pokémons desmaiaram! O jogador perdeu.");
+                parent.setScene(null);
+            }
         }
         if(currentEnemyPkm.getLife()<=0){
             EnemyPokemonIsDead();
@@ -282,6 +299,12 @@ public class CombatStage extends ApplicationAdapter {
             SecondOptionsTable.setPosition(100,0);
         }else {
             SecondOptionsTable.setPosition(50,11110);
+        }
+
+        if(showThirdTable==1){
+            ThirdOptionsTable.setPosition(100,0);
+        }else {
+            ThirdOptionsTable.setPosition(50,11110);
         }
 
         //refere-se a turno como entidade de animação
@@ -321,21 +344,26 @@ public class CombatStage extends ApplicationAdapter {
         batch.draw(ArenaTexture, 0, 0, Camera.viewportWidth, Camera.viewportHeight);
 
         //draw pokemon sprites with animations and effects
-        int Esuplus = 0; //move increase to enemy animation by animation
-        int Psuplus = 0; //move increase to player animation
+        int EsuplusX = 0; //move increase to enemy animation by animation
+        int EsuplusY = 0;
+        int PsuplusX = 0; //move increase to player animation
+        int PsuplusY = 0;
+        Random rand = new Random();
         if(batalha.getTurno().equals("oponente")){
             // batch.setColor(Color.RED);
-            Random rand = new Random();
-            Esuplus = rand.nextInt(-30,30);
+            EsuplusX = rand.nextInt(-30,30);
+        }else if(currentPokemon.getType() == TYPES.FLYING || currentPokemon.getType() == TYPES.BUG ){
+            EsuplusY = rand.nextInt(-2,2);
         }
-        batch.draw(currentEnemyPkm.getFrontTexture(),600+Esuplus,300,300,300);
+        batch.draw(currentEnemyPkm.getFrontTexture(),600+EsuplusX,300+EsuplusY,300,300);
         batch.setColor(Color.WHITE);
         if(batalha.getTurno().equals("player")){
             // batch.setColor(Color.RED);
-            Random rand = new Random();
-            Psuplus = rand.nextInt(-30,30);
+            PsuplusX = rand.nextInt(-30,30);
+        }else if(currentPokemon.getType() == TYPES.FLYING || currentPokemon.getType() == TYPES.BUG ){
+            PsuplusY = rand.nextInt(-2,2);
         }
-        batch.draw(currentPokemon.getBackTexture(),100+Psuplus,0,300,300);
+        batch.draw(currentPokemon.getBackTexture(),100+PsuplusX,0+PsuplusY,300,300);
         batch.setColor(Color.WHITE);
 
 
@@ -357,12 +385,12 @@ public class CombatStage extends ApplicationAdapter {
     }
     @Override
     public void dispose(){
+        batch.dispose();
         sound.dispose();
         generator.dispose();
         ArenaTexture.dispose();
         currentEnemyPkm.disposeTexture();
         currentPokemon.disposeTexture();
-        batch.dispose();
         stage.dispose();
     }
 

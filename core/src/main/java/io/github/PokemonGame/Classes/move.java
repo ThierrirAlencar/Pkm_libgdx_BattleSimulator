@@ -1,19 +1,21 @@
-package io.github.PokemonGame.interfaces;
+package io.github.PokemonGame.Classes;
 
 import com.badlogic.gdx.Gdx;
 import io.github.PokemonGame.Actors.Pokemon;
 import io.github.PokemonGame.Types.EFFECTS;
 import io.github.PokemonGame.Types.TYPES;
-import io.github.PokemonGame.interfaces.SoundEffect;
+
 public class move extends TypeMove{
+    public int id;
     public TYPES type = null;
     public int baseDamage = 0; //dano base de um ataque
     public EFFECTS effect = null;
     public String name;
-    public move(int dmg, TYPES type, String name){
+    public move(int dmg, TYPES type, String name,int Id){
         this.baseDamage = dmg;
         this.type = type;
         this.name = name;
+        this.id = Id;
     }
     public void atack(Pokemon TargetPokemon){
         float damage;
@@ -33,7 +35,7 @@ public class move extends TypeMove{
             case GRASS:
                 damage = super.grass(TargetPokemon.getType(), this.baseDamage);
                 break;
-            case ELETRIC:
+            case ELECTRIC:
                 damage = super.eletric(TargetPokemon.getType(), this.baseDamage);
                 break;
             case ICE:

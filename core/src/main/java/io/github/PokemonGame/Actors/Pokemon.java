@@ -2,7 +2,7 @@ package io.github.PokemonGame.Actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.PokemonGame.Types.TYPES;
-import io.github.PokemonGame.interfaces.move;
+import io.github.PokemonGame.Classes.move;
 
 import java.util.ArrayList;
 
